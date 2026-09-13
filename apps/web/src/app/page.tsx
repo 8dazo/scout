@@ -43,6 +43,12 @@ const MISSIONS = [
   },
 ];
 
+const HERO_FACTS = [
+  { value: "No wallet", label: "Visitor connect" },
+  { value: "$0.03", label: "Capped evidence fee" },
+  { value: "6 signals", label: "Deterministic score" },
+];
+
 const FOOTER_MAP = [
   { word: "Discover", step: "01 Ask — no wallet" },
   { word: "Compare", step: "02 Graph + 03 Score" },
@@ -60,37 +66,62 @@ export default function HomePage() {
 
   return (
     <ScoutShell>
-      <Section variant="editorial">
-        <div className="max-w-scout mx-auto px-4 md:px-8">
-          <div className="max-w-2xl">
-            <p className="font-display text-xs uppercase tracking-widest text-signal mb-4">
-              ETHOnline 2026 protocol research agent
-            </p>
-            <h1 className="text-display text-5xl md:text-7xl lg:text-8xl space-y-1">
-              <span className="block">What Should</span>
-              <span className="block">
-                Scout <span className="text-signal">Find?</span>
-              </span>
-            </h1>
-            <div className="mt-6 space-y-4 text-lg md:text-xl leading-relaxed text-ink/80">
-              <p>
-                Scout ranks Base lending from live Graph data. When the answer is too close to
-                call, it can buy extra evidence from a capped Privy treasury.
+      <section className="border-b-2 border-ink">
+        <div className="max-w-scout mx-auto px-4 md:px-8 py-12 flex items-center min-h-[calc(100svh-101px)] md:min-h-[calc(100svh-65px)]">
+          <div className="w-full grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div>
+              <p className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-signal">
+                <span className="h-2 w-2 rounded-full bg-signal" />
+                ETHOnline 2026 · Protocol research agent
               </p>
-              <p>
-                The result is written to{" "}
-                <span className="font-mono text-base">scout-agent.eth</span>. No Connect Wallet —
-                Scout’s policy wallet pays the $0.03 evidence fee, not you.
+              <h1 className="mt-5 text-display text-5xl md:text-6xl lg:text-7xl">
+                <span className="block">What should</span>
+                <span className="block">
+                  Scout <span className="text-signal">find?</span>
+                </span>
+              </h1>
+              <p className="mt-5 max-w-md text-base md:text-lg leading-relaxed text-ink/70">
+                Live Graph data ranks Base lending. When the call is close, Scout buys evidence and
+                writes the result to <span className="font-mono text-[0.95em]">scout-agent.eth</span>.
               </p>
+              <div className="mt-8 max-w-md border-t-2 border-ink pt-4 grid grid-cols-3 gap-4">
+                {HERO_FACTS.map((fact) => (
+                  <div key={fact.label}>
+                    <p className="font-display text-lg uppercase leading-none">{fact.value}</p>
+                    <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-ink/50">
+                      {fact.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <PartnerStrip variant="marks" className="mt-8" />
             </div>
-            <PartnerStrip variant="marks" className="mt-8" />
-          </div>
 
-          <div id="ask" className="max-w-2xl mt-12 scroll-mt-24">
-            <ResearchComposer prompt={prompt} onPromptChange={setPrompt} />
+            <div id="ask" className="scroll-mt-24">
+              <div className="border-brutal bg-paper-muted p-5 md:p-6 shadow-brutal">
+                <ResearchComposer prompt={prompt} onPromptChange={setPrompt} />
+                <div className="mt-6 border-t-2 border-ink/15 pt-4">
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-ink/50">
+                    Or start from
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {MISSIONS.slice(0, 3).map((m) => (
+                      <button
+                        key={m.tag}
+                        type="button"
+                        onClick={() => setPrompt(m.prompt)}
+                        className="border-brutal bg-paper px-3 py-1.5 font-display text-[11px] uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors"
+                      >
+                        {m.tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </Section>
+      </section>
 
       <Section variant="data">
         <div className="max-w-scout mx-auto px-4 md:px-8">
