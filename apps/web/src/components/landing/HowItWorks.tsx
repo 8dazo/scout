@@ -69,7 +69,7 @@ export function HowItWorks() {
           href="#ask"
           className="font-display text-sm uppercase tracking-widest text-signal hover:underline"
         >
-          Try it below.
+          Ask Scout.
         </a>
       </p>
     </div>

@@ -25,6 +25,22 @@ const MISSIONS = [
     tag: "Risk",
     prompt: "Which protocol shows the strongest growth quality right now?",
   },
+  {
+    tag: "DEX vs SEO",
+    prompt: "Which DEX on Base has the strongest growth with the weakest SEO?",
+  },
+  {
+    tag: "New Users",
+    prompt: "Which Base lending market is attracting the most new users this week?",
+  },
+  {
+    tag: "Aave vs Compound",
+    prompt: "Compare Aave V3 and Compound V3 on Ethereum for a new dashboard product.",
+  },
+  {
+    tag: "TVL vs Search",
+    prompt: "Where is TVL high but developer search demand still low on Base?",
+  },
 ];
 
 const FOOTER_MAP = [
@@ -35,13 +51,18 @@ const FOOTER_MAP = [
 ];
 
 export default function HomePage() {
-  const [selectedPrompt, setSelectedPrompt] = useState("");
+  const [prompt, setPrompt] = useState("");
+
+  function selectMission(nextPrompt: string) {
+    setPrompt(nextPrompt);
+    document.getElementById("ask")?.scrollIntoView({ behavior: "smooth" });
+  }
 
   return (
     <ScoutShell>
       <Section variant="editorial">
-        <div className="max-w-scout mx-auto px-4 md:px-8 space-y-16">
-          <div className="max-w-3xl">
+        <div className="max-w-scout mx-auto px-4 md:px-8">
+          <div className="max-w-2xl">
             <p className="font-display text-xs uppercase tracking-widest text-signal mb-4">
               ETHOnline 2026 protocol research agent
             </p>
@@ -51,23 +72,29 @@ export default function HomePage() {
                 Scout <span className="text-signal">Find?</span>
               </span>
             </h1>
-            <p className="mt-6 text-base md:text-lg leading-relaxed text-ink/80">
-              Scout ranks Base lending from live Graph data, buys extra evidence from a capped
-              Privy treasury when uncertain, and writes the result to{" "}
-              <span className="font-mono text-sm">scout-agent.eth</span>.
-            </p>
-            <p className="mt-3 text-sm text-ink/70">
-              No Connect Wallet. You do not fund the $0.03 evidence payment — Scout’s policy
-              wallet does.
-            </p>
+            <div className="mt-6 space-y-4 text-lg md:text-xl leading-relaxed text-ink/80">
+              <p>
+                Scout ranks Base lending from live Graph data. When the answer is too close to
+                call, it can buy extra evidence from a capped Privy treasury.
+              </p>
+              <p>
+                The result is written to{" "}
+                <span className="font-mono text-base">scout-agent.eth</span>. No Connect Wallet —
+                Scout’s policy wallet pays the $0.03 evidence fee, not you.
+              </p>
+            </div>
             <PartnerStrip variant="marks" className="mt-8" />
           </div>
 
-          <HowItWorks />
-
-          <div id="ask" className="max-w-3xl scroll-mt-24">
-            <ResearchComposer initialPrompt={selectedPrompt} />
+          <div id="ask" className="max-w-2xl mt-12 scroll-mt-24">
+            <ResearchComposer prompt={prompt} onPromptChange={setPrompt} />
           </div>
+        </div>
+      </Section>
+
+      <Section variant="data">
+        <div className="max-w-scout mx-auto px-4 md:px-8">
+          <HowItWorks />
         </div>
       </Section>
 
@@ -91,10 +118,7 @@ export default function HomePage() {
                 key={m.tag}
                 tag={m.tag}
                 prompt={m.prompt}
-                onSelect={() => {
-                  setSelectedPrompt(m.prompt);
-                  document.getElementById("ask")?.scrollIntoView({ behavior: "smooth" });
-                }}
+                onSelect={() => selectMission(m.prompt)}
               />
             ))}
           </div>
@@ -113,7 +137,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <p className="max-w-xl mx-auto text-ink/70">
+          <p className="max-w-xl mx-auto text-ink/70 leading-relaxed">
             Scout combines live on-chain activity, web intelligence and paid evidence to turn
             uncertain Web3 questions into defensible decisions.
           </p>

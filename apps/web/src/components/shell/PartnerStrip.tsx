@@ -78,10 +78,6 @@ export function PartnerStrip({
           </div>
         ))}
       </div>
-      <p className="mt-4 text-sm text-ink/70">
-        Scout researches without a wallet. Extra evidence is paid from the agent treasury after
-        Authorize. The visitor does not fund $0.03.
-      </p>
     </div>
   );
 }
