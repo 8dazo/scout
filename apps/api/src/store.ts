@@ -1,32 +1,19 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync } from "node:fs";
 import { join } from "node:path";
-import {
-  ResearchSessionSchema,
-  type DecisionLogEntry,
-  type ResearchSession,
-} from "@scout/schemas";
-import verifiedSessionData from "./verified-session.json" with { type: "json" };
+import { type DecisionLogEntry, type ResearchSession } from "@scout/schemas";
 
 const DATA_DIR = process.env.SCOUT_DATA_DIR ?? join(process.cwd(), ".scout-data");
 const SESSIONS_FILE = join(DATA_DIR, "sessions.json");
 
 type SessionStore = Record<string, ResearchSession>;
 
-const verifiedSession = ResearchSessionSchema.parse(verifiedSessionData);
-const VERIFIED_SESSIONS: SessionStore = {
-  [verifiedSession.researchId]: verifiedSession,
-};
-
 function loadStore(): SessionStore {
   if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
-  if (!existsSync(SESSIONS_FILE)) return { ...VERIFIED_SESSIONS };
+  if (!existsSync(SESSIONS_FILE)) return {};
   try {
-    return {
-      ...VERIFIED_SESSIONS,
-      ...(JSON.parse(readFileSync(SESSIONS_FILE, "utf8")) as SessionStore),
-    };
+    return JSON.parse(readFileSync(SESSIONS_FILE, "utf8")) as SessionStore;
   } catch {
-    return { ...VERIFIED_SESSIONS };
+    return {};
   }
 }
 
