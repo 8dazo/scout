@@ -18,7 +18,7 @@
   --shadow-offset: 4px 4px 0 var(--ink);
   --radius: 4px;
   --font-display: "Big Shoulders";
-  --font-sans: "DM Sans";
+  --font-sans: Helvetica;
 }
 
 @media (prefers-reduced-motion: reduce) {

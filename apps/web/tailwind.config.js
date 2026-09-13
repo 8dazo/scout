@@ -16,7 +16,8 @@ module.exports = {
       fontFamily: {
         display: ['var(--font-display, "Big Shoulders")', "system-ui", "sans-serif"],
         sans: [
-          'var(--font-sans, "DM Sans")',
+          'var(--font-sans, Helvetica)',
+          "Arial",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",

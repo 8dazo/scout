@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import type { ResearchSession } from "@scout/schemas";
 import type { DecisionLogEntry } from "@scout/schemas";
 import { AgentStatus } from "./AgentStatus";
-import { WalletButton } from "./WalletButton";
 
 const NAV = [
   { href: "/", label: "Research" },
@@ -17,11 +16,9 @@ const NAV = [
 export function ScoutHeader({
   session,
   lastLog,
-  onOpenTreasury,
 }: {
   session?: ResearchSession | null;
   lastLog?: DecisionLogEntry;
-  onOpenTreasury?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -57,7 +54,6 @@ export function ScoutHeader({
           <div className="hidden sm:block">
             <AgentStatus session={session ?? null} lastLog={lastLog} compact />
           </div>
-          <WalletButton session={session} onOpenTreasury={onOpenTreasury} />
         </div>
       </div>
 
@@ -73,15 +69,6 @@ export function ScoutHeader({
             {label}
           </Link>
         ))}
-        {onOpenTreasury && (
-          <button
-            type="button"
-            onClick={onOpenTreasury}
-            className="flex-1 text-center py-2 font-display text-xs uppercase bg-paper-muted text-signal font-bold hover:bg-paper"
-          >
-            Treasury
-          </button>
-        )}
       </nav>
     </header>
   );
