@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev --filter=@scout/web --filter=@scout/api",
+    "dev:all": "turbo run dev --parallel",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "provision:privy": "node --env-file=.env scripts/provision-privy.mjs",

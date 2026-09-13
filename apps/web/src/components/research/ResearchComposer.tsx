@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { ArrowRightIcon } from "@/components/ui/ArrowRightIcon";
 
 export function ResearchComposer({ initialPrompt = "" }: { initialPrompt?: string }) {
   const router = useRouter();
@@ -28,8 +29,9 @@ export function ResearchComposer({ initialPrompt = "" }: { initialPrompt?: strin
         placeholder="Analyze the most promising lending protocol on Base for a developer product…"
         className="text-lg min-h-[120px]"
       />
-      <Button onClick={handleSubmit} disabled={!prompt.trim()}>
-        Run Research →
+      <Button onClick={handleSubmit} disabled={!prompt.trim()} className="group gap-3">
+        <span>Run Research</span>
+        <ArrowRightIcon className="w-5 h-5 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
       </Button>
     </div>
   );
