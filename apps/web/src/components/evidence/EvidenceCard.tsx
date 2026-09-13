@@ -30,8 +30,13 @@ function evidencePreview(source: Source): { title: string; stats: Array<{ label:
     return {
       title: parsed.protocol,
       stats: [
-        { label: "Demand", value: formatPct(parsed.metrics.searchDemandChangePct ?? 0) },
-        { label: "Visibility", value: `${formatScore(parsed.metrics.organicVisibility)}/100` },
+        {
+          label: typeof parsed.metrics.searchDemandChangePct === "number" ? "Demand" : "Web2 buzz",
+          value: typeof parsed.metrics.searchDemandChangePct === "number"
+            ? formatPct(parsed.metrics.searchDemandChangePct)
+            : parsed.metrics.webBuzzScore == null ? "—" : `${formatScore(parsed.metrics.webBuzzScore)}/100`,
+        },
+        { label: "Visibility", value: parsed.metrics.organicVisibility == null ? "—" : `${formatScore(parsed.metrics.organicVisibility)}/100` },
         { label: "Keywords", value: String(parsed.keywords.length) },
       ],
     };

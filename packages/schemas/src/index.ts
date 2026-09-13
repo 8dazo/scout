@@ -74,6 +74,10 @@ export const SeoMetricsSchema = z.object({
   competitorSerpDominance: z.number().optional(),
   developerIntentScore: z.number().optional(),
   aiVisibilityScore: z.number().optional(),
+  webBuzzScore: z.number().optional(),
+  githubStars: z.number().optional(),
+  githubRepoCount: z.number().optional(),
+  hackerNewsMentions: z.number().optional(),
 });
 
 export type SeoMetrics = z.infer<typeof SeoMetricsSchema>;

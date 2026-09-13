@@ -93,9 +93,9 @@ function avg(values: number[]): number {
   return values.reduce((a, b) => a + b, 0) / values.length;
 }
 
-function competitorSerpDominance(items: SerpItem[] | undefined, protocol: string): number {
+function competitorSerpDominance(items: SerpItem[] | undefined, protocol: string): number | undefined {
   const organic = (items ?? []).filter((i) => i.type === "organic" && i.domain);
-  if (organic.length === 0) return 50;
+  if (organic.length === 0) return undefined;
 
   const protocolDomains = protocolTokens(protocol).map((t) => `${t}.`);
   const official = organic.filter((i) =>
@@ -110,7 +110,8 @@ function competitorSerpDominance(items: SerpItem[] | undefined, protocol: string
   return pct1(Math.min(100, dominance));
 }
 
-function aiVisibilityScore(items: SerpItem[] | undefined): number {
+function aiVisibilityScore(items: SerpItem[] | undefined): number | undefined {
+  if (!items?.length) return undefined;
   const hasAiOverview = (items ?? []).some((i) => i.type === "ai_overview");
   const organicCount = (items ?? []).filter((i) => i.type === "organic").length;
   if (hasAiOverview) return pct1(Math.min(100, 55 + organicCount * 3));
@@ -125,8 +126,12 @@ export function buildSeoMetrics(
   const rows =
     research.results?.flatMap((r) => (r.ok ? r.rows ?? [] : [])) ?? [];
 
+  const serpItems = serp.results?.filter((r) => r.ok).flatMap((r) => r.items ?? []) ?? [];
   if (rows.length === 0) {
-    return neutralSeoMetrics();
+    return {
+      competitorSerpDominance: competitorSerpDominance(serpItems, protocol),
+      aiVisibilityScore: aiVisibilityScore(serpItems),
+    };
   }
 
   const relevant = rows.filter((row) => rowMatchesProtocol(row, protocol));
@@ -149,7 +154,6 @@ export function buildSeoMetrics(
     Math.min(100, (devIntentHits / Math.max(pool.length, 1)) * 100),
   );
 
-  const serpItems = serp.results?.find((r) => r.ok)?.items;
   const competitorSerpDom = competitorSerpDominance(serpItems, protocol);
 
   return {

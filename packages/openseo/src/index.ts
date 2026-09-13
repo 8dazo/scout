@@ -6,10 +6,26 @@ import {
   type SerpResultsPayload,
 } from "./metrics.js";
 import { MCP_URL, OpenSEOMcpClient, OpenSEOMcpError } from "./mcp.js";
+import { fetchWebBuzz } from "./webBuzz.js";
+
+function protocolFor(candidate: Candidate): string {
+  return candidate.sourceProtocol ?? candidate.protocol.split(" · ").at(-1) ?? candidate.protocol;
+}
+
+function queryPlan(protocol: string, assetSymbol?: string) {
+  const base = protocol.replace(/\b(v\d+)\b/gi, "").trim() || protocol;
+  const seeds = [`${base} lending`, `${base} defi`, ...(assetSymbol ? [`${assetSymbol} ${base}`] : [])];
+  const queries = [`${base} lending`, `${base} defi`, ...(assetSymbol ? [`${assetSymbol} ${base}`] : [])];
+  return { seeds: [...new Set(seeds)], queries: [...new Set(queries)] };
+}
+
+function hasSerpData(serp: SerpResultsPayload): boolean {
+  return Boolean(serp.results?.some((result) => result.ok && (result.items?.length ?? 0) > 0));
+}
 
 export class OpenSEOProvider implements DataProvider {
   name = "OpenSEO";
-  capabilities = ["keyword-research", "serp", "competitor", "ai-visibility"];
+  capabilities = ["keyword-research", "serp", "competitor", "ai-visibility", "public-web-buzz"];
 
   constructor(
     private apiKey?: string,
@@ -36,20 +52,18 @@ export class OpenSEOProvider implements DataProvider {
   async researchProtocol(protocol: string): Promise<SeoMetrics> {
     const client = this.client();
     const projectId = await client.getProjectId();
-    const seed = `${protocol} lending defi`;
+    const plan = queryPlan(protocol);
 
     const research = await client.callTool<ResearchKeywordsResult>("research_keywords", {
       projectId,
-      seeds: [{ seed }],
+      seeds: plan.seeds.map((seed) => ({ seed })),
       resultLimit: 150,
     });
-
     const serp = await client.callTool<SerpResultsPayload>("get_serp_results", {
       projectId,
-      queries: [{ keyword: `${protocol} lending` }],
+      queries: plan.queries.map((keyword) => ({ keyword })),
       depth: 10,
     });
-
     return buildSeoMetrics(protocol, research, serp);
   }
 
@@ -63,6 +77,14 @@ export class OpenSEOProvider implements DataProvider {
     const enriched: Candidate[] = [];
     const sparse: string[] = [];
     const client = this.client();
+    const buzzByProtocol = new Map<string, Promise<Awaited<ReturnType<typeof fetchWebBuzz>>>>();
+    const getBuzz = (protocol: string) => {
+      const known = buzzByProtocol.get(protocol);
+      if (known) return known;
+      const request = fetchWebBuzz(protocol);
+      buzzByProtocol.set(protocol, request);
+      return request;
+    };
 
     let projectId: string;
     try {
@@ -70,92 +92,96 @@ export class OpenSEOProvider implements DataProvider {
     } catch (err) {
       const message = err instanceof Error ? err.message : "unknown error";
       for (const c of candidates) {
+        const protocol = protocolFor(c);
+        const buzz = await getBuzz(protocol).catch(() => undefined);
         sparse.push(c.protocol);
-        const sourceId = `openseo-${c.protocol.toLowerCase().replace(/\s+/g, "-")}-${c.chain}`;
+        const sourceId = `openseo-${c.id}`;
         sources.push({
           id: sourceId,
-          name: "OpenSEO",
+          name: buzz ? "Web2 Buzz" : "OpenSEO",
           type: "web",
           cost: 0,
           data: {
-            live: false,
+            live: Boolean(buzz),
             sparse: true,
             unavailable: true,
-            protocol: c.protocol,
+            protocol,
             error: message,
-            metrics: neutralSeoMetrics(),
+            webBuzz: buzz?.evidence,
+            metrics: buzz?.metrics ?? neutralSeoMetrics(),
           },
         });
-        enriched.push({ ...c, seoMetrics: undefined });
+        enriched.push({ ...c, seoMetrics: buzz?.metrics });
       }
-      return { candidates: enriched, sources, sparse, unavailable: true };
+      return { candidates: enriched, sources, sparse, unavailable: !sources.some((source) => (source.data as { live?: boolean } | undefined)?.live) };
     }
 
     for (const c of candidates) {
-      const seoSubject =
-        c.assetSymbol && c.sourceProtocol
-          ? `${c.assetSymbol} ${c.sourceProtocol}`
-          : c.protocol;
-      const seed = `${seoSubject} ${c.chain} lending defi`;
+      const protocol = protocolFor(c);
+      const plan = queryPlan(protocol, c.assetSymbol);
       const sourceId = `openseo-${c.id}`;
 
       try {
-        const research = await client.callTool<ResearchKeywordsResult>("research_keywords", {
-          projectId,
-          seeds: [{ seed }],
-          resultLimit: 150,
-        });
-        const serp = await client.callTool<SerpResultsPayload>("get_serp_results", {
-          projectId,
-          queries: [{ keyword: `${seoSubject} lending` }],
-          depth: 10,
-        });
+        const [research, serp, buzz] = await Promise.all([
+          client.callTool<ResearchKeywordsResult>("research_keywords", {
+            projectId,
+            seeds: plan.seeds.map((seed) => ({ seed })),
+            resultLimit: 150,
+          }),
+          client.callTool<SerpResultsPayload>("get_serp_results", {
+            projectId,
+            queries: plan.queries.map((keyword) => ({ keyword })),
+            depth: 10,
+          }),
+          getBuzz(protocol),
+        ]);
+        const keywordRows = research.results?.flatMap((r) => (r.ok ? r.rows ?? [] : [])) ?? [];
+        const hasOpenSeoData = keywordRows.length > 0 || hasSerpData(serp);
+        const seo = buildSeoMetrics(protocol, research, serp);
+        const metrics = buzz ? { ...seo, ...buzz.metrics } : seo;
+        const live = hasOpenSeoData || Boolean(buzz);
 
-        const keywordRows =
-          research.results?.flatMap((r) => (r.ok ? r.rows ?? [] : [])) ?? [];
-        const hasKeywordData = keywordRows.length > 0;
-        const seo = hasKeywordData
-          ? buildSeoMetrics(seoSubject, research, serp)
-          : neutralSeoMetrics();
-
-        if (!hasKeywordData) {
-          sparse.push(c.protocol);
-        }
-
+        if (!hasOpenSeoData) sparse.push(c.protocol);
         sources.push({
           id: sourceId,
-          name: "OpenSEO",
+          name: buzz && !hasOpenSeoData ? "Web2 Buzz" : "OpenSEO",
           type: "web",
           cost: 0,
           data: {
-            live: hasKeywordData,
-            sparse: !hasKeywordData,
-            protocol: c.protocol,
-            seed,
+            live,
+            sparse: !hasOpenSeoData,
+            protocol,
+            seeds: plan.seeds,
+            queries: plan.queries,
             research,
             serp,
-            metrics: seo,
+            webBuzz: buzz?.evidence,
+            metrics,
           },
         });
-        enriched.push({ ...c, seoMetrics: hasKeywordData ? seo : undefined });
+        enriched.push({ ...c, seoMetrics: Object.keys(metrics).length ? metrics : undefined });
       } catch (err) {
         const message = err instanceof Error ? err.message : "unknown error";
+        const buzz = await getBuzz(protocol).catch(() => undefined);
+        const metrics = buzz?.metrics ?? neutralSeoMetrics();
         sparse.push(c.protocol);
         sources.push({
           id: sourceId,
-          name: "OpenSEO",
+          name: buzz ? "Web2 Buzz" : "OpenSEO",
           type: "web",
           cost: 0,
           data: {
-            live: false,
+            live: Boolean(buzz),
             sparse: true,
-            protocol: c.protocol,
-            seed,
+            protocol,
+            seeds: plan.seeds,
+            queries: plan.queries,
             error: message,
-            metrics: neutralSeoMetrics(),
+            webBuzz: buzz?.evidence,
+            metrics,
           },
         });
-        enriched.push({ ...c, seoMetrics: undefined });
+        enriched.push({ ...c, seoMetrics: Object.keys(metrics).length ? metrics : undefined });
       }
     }
 

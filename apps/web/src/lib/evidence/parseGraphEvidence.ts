@@ -206,6 +206,8 @@ export function parseGraphEvidence(source: Source): ParsedGraphEvidence | null {
     }>;
 
     const sorted = [...snapshots].sort((a, b) => Number(b.timestamp ?? 0) - Number(a.timestamp ?? 0));
+    // A missing subgraph field is unknown, never a measured zero.
+    const hasDau = snapshots.some((snapshot) => typeof snapshot.dailyActiveUsers === "number");
     const series: TimeSeriesPoint[] = sorted
       .slice()
       .reverse()
@@ -213,14 +215,13 @@ export function parseGraphEvidence(source: Source): ParsedGraphEvidence | null {
         label: formatTimestamp(s.timestamp),
         timestamp: Number(s.timestamp ?? 0),
         primary: parseFloat(s.totalValueLockedUSD ?? "0"),
-        secondary: s.dailyActiveUsers ?? 0,
+        ...(hasDau ? { secondary: s.dailyActiveUsers, secondaryLabel: "DAU" } : {}),
         primaryLabel: "TVL",
-        secondaryLabel: "DAU",
       }));
 
     const recentTvl = parseFloat(sorted[0]?.totalValueLockedUSD ?? "0");
     const priorTvl = parseFloat(sorted[sorted.length - 1]?.totalValueLockedUSD ?? "0");
-    const recentDau = sorted[0]?.dailyActiveUsers ?? 0;
+    const recentDau = sorted[0]?.dailyActiveUsers;
 
     return {
       kind,
@@ -230,8 +231,7 @@ export function parseGraphEvidence(source: Source): ParsedGraphEvidence | null {
       summary: {
         primaryLabel: "TVL",
         primaryValue: recentTvl.toFixed(0),
-        secondaryLabel: "Daily active users",
-        secondaryValue: String(recentDau),
+        ...(hasDau ? { secondaryLabel: "Daily active users", secondaryValue: String(recentDau) } : {}),
         changePct: pctChange(recentTvl, priorTvl),
         dataPoints: sorted.length,
       },

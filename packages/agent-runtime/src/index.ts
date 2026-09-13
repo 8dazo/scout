@@ -227,9 +227,9 @@ export async function runResearch(opts: RunResearchOptions): Promise<ResearchSes
       emit(
         runtime,
         seoResult.unavailable
-          ? `OpenSEO unavailable (${sparseSeo.length} candidates scored with neutral SEO baseline). Research continues with on-chain data.`
+          ? `OpenSEO unavailable (${sparseSeo.length} candidates have no keyword or SERP evidence). Research continues with on-chain data.`
           : sparseSeo.length > 0
-            ? `OpenSEO complete — ${sparseSeo.length} protocol(s) had sparse keyword data (${sparseSeo.slice(0, 3).join(", ")}${sparseSeo.length > 3 ? "…" : ""}); scored with neutral SEO baseline.`
+            ? `OpenSEO complete — ${sparseSeo.length} protocol(s) had sparse keyword data (${sparseSeo.slice(0, 3).join(", ")}${sparseSeo.length > 3 ? "…" : ""}); public Web2 buzz is used when available.`
             : "OpenSEO web intelligence complete.",
         seoResult.unavailable || sparseSeo.length > 0 ? "warn" : "info",
         "openseo.complete",
@@ -244,7 +244,7 @@ export async function runResearch(opts: RunResearchOptions): Promise<ResearchSes
       sparseSeo = candidates.map((c) => c.protocol);
       emit(
         runtime,
-        `OpenSEO failed (${message}). Continuing with on-chain evidence and neutral SEO baseline.`,
+        `OpenSEO failed (${message}). Continuing with available on-chain evidence.`,
         "warn",
         "openseo.complete",
         { sparse: sparseSeo, unavailable: true, error: message },

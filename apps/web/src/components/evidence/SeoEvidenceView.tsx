@@ -26,7 +26,11 @@ export function SeoEvidenceView({ source }: { source: Source }) {
   }));
 
   const demandTone =
-    (m.searchDemandChangePct ?? 0) >= 0 ? ("positive" as const) : ("negative" as const);
+    typeof m.searchDemandChangePct === "number" && m.searchDemandChangePct >= 0
+      ? ("positive" as const)
+      : typeof m.searchDemandChangePct === "number"
+        ? ("negative" as const)
+        : undefined;
 
   return (
     <div className="space-y-6">
@@ -42,32 +46,39 @@ export function SeoEvidenceView({ source }: { source: Source }) {
         items={[
           {
             label: "Search demand",
-            value: formatPct(m.searchDemandChangePct ?? 0),
+            value: formatPct(m.searchDemandChangePct),
             hint: "3-mo trend avg",
             tone: demandTone,
           },
           {
             label: "Organic visibility",
-            value: `${formatScore(m.organicVisibility)}/100`,
+            value: m.organicVisibility == null ? "—" : `${formatScore(m.organicVisibility)}/100`,
           },
           {
             label: "Content gap",
-            value: `${formatScore(m.contentGapScore)}/100`,
+            value: m.contentGapScore == null ? "—" : `${formatScore(m.contentGapScore)}/100`,
             hint: "Higher = more opportunity",
           },
           {
             label: "Dev intent",
-            value: `${formatScore(m.developerIntentScore)}/100`,
+            value: m.developerIntentScore == null ? "—" : `${formatScore(m.developerIntentScore)}/100`,
           },
           {
             label: "SERP dominance",
-            value: `${formatScore(m.competitorSerpDominance)}/100`,
+            value: m.competitorSerpDominance == null ? "—" : `${formatScore(m.competitorSerpDominance)}/100`,
             hint: "Official + major publishers",
           },
           {
             label: "AI visibility",
-            value: `${formatScore(m.aiVisibilityScore ?? 0)}/100`,
+            value: m.aiVisibilityScore == null ? "—" : `${formatScore(m.aiVisibilityScore)}/100`,
           },
+          ...(typeof m.webBuzzScore === "number"
+            ? [{
+                label: "Web2 buzz",
+                value: `${formatScore(m.webBuzzScore)}/100`,
+                hint: `${m.githubStars ?? 0} GitHub stars · ${m.hackerNewsMentions ?? 0} HN stories`,
+              }]
+            : []),
           {
             label: "Keywords",
             value: String(parsed.keywords.length),

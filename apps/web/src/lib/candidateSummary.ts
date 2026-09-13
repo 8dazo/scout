@@ -52,6 +52,7 @@ export function candidateDisplaySubtitle(score: CandidateScore): string {
 export function candidateInsight(score: CandidateScore, raw?: Candidate): string {
   const onchain = onchainAverage(raw?.onchainMetrics);
   const search = raw?.seoMetrics?.searchDemandChangePct;
+  const buzz = raw?.seoMetrics?.webBuzzScore;
 
   if (score.gapSignal) {
     return score.gapSignal
@@ -63,6 +64,9 @@ export function candidateInsight(score: CandidateScore, raw?: Candidate): string
     return `on-chain ${formatSignedPct(onchain)} but search ${formatSignedPct(search)}`;
   }
 
+  if (typeof search !== "number" && typeof buzz === "number") {
+    return `on-chain ${formatSignedPct(onchain)} · Web2 buzz ${buzz.toFixed(1)}/100`;
+  }
   return `on-chain ${formatSignedPct(onchain)} · search ${formatSignedPct(search)}`;
 }
 

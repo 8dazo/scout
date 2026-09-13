@@ -94,6 +94,26 @@ describe("scoring", () => {
     expect(breakdown.modelVersion).toBe("scout-v1");
   });
 
+  it("uses observed Web2 activity when keyword demand is unavailable", () => {
+    const candidate: Candidate = {
+      id: "web2",
+      protocol: "Web2 Protocol",
+      chain: "base",
+      seoMetrics: {
+        webBuzzScore: 64,
+        githubStars: 1200,
+        githubRepoCount: 4,
+        hackerNewsMentions: 7,
+      },
+    };
+    const score = scoreCandidate(candidate, 0, ctx, false);
+    const demand = score.dimensions.find((dimension) => dimension.key === "searchDemand");
+    const gap = score.dimensions.find((dimension) => dimension.key === "competitiveGap");
+    expect(demand?.score).toBe(64);
+    expect(demand?.rationale).toContain("Web2 buzz");
+    expect(gap?.score).toBe(0);
+  });
+
   it("does not treat missing SEO and user measurements as confidence", () => {
     const sparse: Candidate = {
       id: "sparse",

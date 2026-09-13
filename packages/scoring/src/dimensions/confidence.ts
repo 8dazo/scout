@@ -15,7 +15,7 @@ export function scoreEvidenceConfidence(
     ? Object.values(candidate.seoMetrics).filter((value) => typeof value === "number").length
     : 0;
   const onchainCoverage = Math.min(1, onchainObserved / 11);
-  const seoCoverage = Math.min(1, seoObserved / 6);
+  const seoCoverage = Math.min(1, seoObserved / 10);
   let score = 20 + onchainCoverage * 45 + seoCoverage * 25;
   if (hasPaidAnalysis) {
     score += (candidate.deepAnalysis?.confidenceBoost ?? 0.1) * 100;
@@ -33,7 +33,7 @@ export function scoreEvidenceConfidence(
     key: "evidenceConfidence",
     weight: DIMENSION_WEIGHTS.evidenceConfidence,
     score: toScore(score),
-    rationale: `${onchainObserved}/11 on-chain and ${seoObserved}/6 SEO fields observed across ${sourceCount} recorded sources${hasPaidAnalysis ? ", paid diagnostics included" : ""}`,
+    rationale: `${onchainObserved}/11 on-chain and ${seoObserved}/10 web fields observed across ${sourceCount} recorded sources${hasPaidAnalysis ? ", paid diagnostics included" : ""}`,
     evidenceIds,
   };
 }

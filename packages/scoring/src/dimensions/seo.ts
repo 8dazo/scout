@@ -7,16 +7,26 @@ export function scoreSearchDemand(
   evidenceIds: string[],
 ): DimensionScore {
   if (!metrics || Object.keys(metrics).length === 0) {
-    return { key: "searchDemand", weight: DIMENSION_WEIGHTS.searchDemand, score: 0, rationale: "SEO demand data unavailable", evidenceIds: [] };
+    return { key: "searchDemand", weight: DIMENSION_WEIGHTS.searchDemand, score: 0, rationale: "Search and Web2 demand data unavailable", evidenceIds: [] };
+  }
+  const buzz = metrics.webBuzzScore;
+  if (typeof metrics.searchDemandChangePct !== "number" && typeof buzz === "number") {
+    return {
+      key: "searchDemand",
+      weight: DIMENSION_WEIGHTS.searchDemand,
+      score: toScore(buzz),
+      rationale: `Web2 buzz ${buzz.toFixed(1)}/100 from ${metrics.githubStars ?? 0} GitHub stars across ${metrics.githubRepoCount ?? 0} repositories and ${metrics.hackerNewsMentions ?? 0} Hacker News stories`,
+      evidenceIds,
+    };
   }
   const demand = metrics.searchDemandChangePct ?? 0;
   const devIntent = metrics.developerIntentScore ?? 0;
-  const score = toScore(demand * 0.6 + devIntent * 0.4);
+  const score = toScore(demand * 0.5 + devIntent * 0.3 + (buzz ?? 0) * 0.2);
   return {
     key: "searchDemand",
     weight: DIMENSION_WEIGHTS.searchDemand,
     score,
-    rationale: `Search demand ${demand >= 0 ? "+" : ""}${demand.toFixed(1)}%, developer-intent ${devIntent.toFixed(1)}/100`,
+    rationale: `Search demand ${demand >= 0 ? "+" : ""}${demand.toFixed(1)}%, developer-intent ${devIntent.toFixed(1)}/100${typeof buzz === "number" ? `, Web2 buzz ${buzz.toFixed(1)}/100` : ""}`,
     evidenceIds,
   };
 }
@@ -27,10 +37,10 @@ export function scoreCompetitiveGap(
   onchainRankScore: number,
   evidenceIds: string[],
 ): DimensionScore {
-  if (!seo || Object.keys(seo).length === 0) {
-    return { key: "competitiveGap", weight: DIMENSION_WEIGHTS.competitiveGap, score: 0, rationale: "Competitive SEO data unavailable", evidenceIds: [] };
+  if (typeof seo?.competitorSerpDominance !== "number") {
+    return { key: "competitiveGap", weight: DIMENSION_WEIGHTS.competitiveGap, score: 0, rationale: "Competitive SERP data unavailable", evidenceIds: [] };
   }
-  const serpDom = seo.competitorSerpDominance ?? 0;
+  const serpDom = seo.competitorSerpDominance;
   const gap = onchainRankScore - serpDom;
   const score = toScore(50 + gap);
   const onchainUp = (onchain?.tvlChangePct ?? 0) > 20;
@@ -53,11 +63,11 @@ export function scoreSeoOpportunity(
   onchain: OnchainMetrics | undefined,
   evidenceIds: string[],
 ): DimensionScore {
-  if (!metrics || Object.keys(metrics).length === 0) {
+  if (typeof metrics?.organicVisibility !== "number" || typeof metrics.contentGapScore !== "number") {
     return { key: "seoOpportunity", weight: DIMENSION_WEIGHTS.seoOpportunity, score: 0, rationale: "SEO opportunity data unavailable", evidenceIds: [] };
   }
-  const visibility = metrics.organicVisibility ?? 0;
-  const gap = metrics.contentGapScore ?? 0;
+  const visibility = metrics.organicVisibility;
+  const gap = metrics.contentGapScore;
   const onchainHot = (onchain?.tvlChangePct ?? 0) > 15;
   const score = toScore((100 - visibility) * 0.4 + gap * 0.4 + (onchainHot ? 20 : 0));
   return {
