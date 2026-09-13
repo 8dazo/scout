@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Card } from "@/components/ui/Card";
 import { fetchReports, type ResearchListItem } from "@/lib/api";
 import { formatScore } from "@/lib/formatScore";
+import { ArrowRightIcon } from "@/components/ui/ArrowRightIcon";
 
 export default function ReportsPage() {
   const [reports, setReports] = useState<ResearchListItem[]>([]);
@@ -32,7 +33,12 @@ export default function ReportsPage() {
           <EmptyState
             title="No Reports."
             description="Your completed research will appear here."
-            actionLabel="Start Research →"
+            actionLabel={
+              <span className="inline-flex items-center gap-2">
+                <span>Start Research</span>
+                <ArrowRightIcon className="w-4 h-4" strokeWidth={2.5} />
+              </span>
+            }
             onAction={() => { window.location.href = "/"; }}
           />
         )}

@@ -6,6 +6,7 @@ import { parseGraphEvidence } from "@/lib/evidence/parseGraphEvidence";
 import { parseSeoEvidence } from "@/lib/evidence/parseSeoEvidence";
 import { formatUsd, formatPct } from "@/lib/evidence/format";
 import { formatScore } from "@/lib/formatScore";
+import { ArrowRightIcon } from "@/components/ui/ArrowRightIcon";
 
 function evidencePreview(source: Source): { title: string; stats: Array<{ label: string; value: string }> } {
   if (source.type === "onchain") {
@@ -80,8 +81,9 @@ export function EvidenceCard({
         </div>
       )}
 
-      <p className="mt-4 font-mono text-xs text-signal opacity-0 group-hover:opacity-100 transition-opacity">
-        View full evidence →
+      <p className="mt-4 font-mono text-xs text-signal opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-1.5">
+        <span>View full evidence</span>
+        <ArrowRightIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
       </p>
     </button>
   );

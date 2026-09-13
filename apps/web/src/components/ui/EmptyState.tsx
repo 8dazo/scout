@@ -8,7 +8,7 @@ export function EmptyState({
 }: {
   title: string;
   description: string;
-  actionLabel?: string;
+  actionLabel?: React.ReactNode;
   onAction?: () => void;
 }) {
   return (

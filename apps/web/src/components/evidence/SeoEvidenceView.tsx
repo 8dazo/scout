@@ -34,7 +34,7 @@ export function SeoEvidenceView({ source }: { source: Source }) {
         <p className="font-display text-xs uppercase tracking-widest text-ink/50">Protocol & seed</p>
         <p className="font-display text-xl uppercase mt-1">{parsed.protocol}</p>
         {parsed.seed && (
-          <p className="mt-1 font-mono text-sm text-ink/70">Seed: &ldquo;{parsed.seed}&rdquo;</p>
+          <p className="mt-1 font-mono text-sm text-ink/70">Seed: {parsed.seed}</p>
         )}
       </div>
 

@@ -11,7 +11,7 @@ const inter = Inter({
 const interDisplay = Inter({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["600", "700", "800", "900"],
 });
 
 const jetbrainsMono = JetBrains_Mono({

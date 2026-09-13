@@ -4,6 +4,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import type { ResearchSession } from "@scout/schemas";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { CloseIcon } from "@/components/ui/CloseIcon";
 
 export function BudgetDrawer({
   open,
@@ -13,7 +14,7 @@ export function BudgetDrawer({
 }: {
   open: boolean;
   onClose: () => void;
-  session: ResearchSession | null;
+  session?: ResearchSession | null;
   defaultBudget?: number;
 }) {
   const { ready, authenticated, login, user } = usePrivy();
@@ -33,9 +34,16 @@ export function BudgetDrawer({
         role="dialog"
         aria-label="Scout treasury"
       >
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-center">
           <h2 className="font-display text-xl uppercase">Scout Treasury</h2>
-          <button type="button" onClick={onClose} className="font-mono text-sm hover:text-signal">✕</button>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close treasury"
+            className="p-1.5 -mr-1.5 -mt-1.5 text-ink hover:text-signal transition-colors flex items-center justify-center rounded-sm hover:bg-paper-muted"
+          >
+            <CloseIcon className="w-6 h-6" strokeWidth={2.5} />
+          </button>
         </div>
 
         <Card shadow>
