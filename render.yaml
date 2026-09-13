@@ -4,6 +4,7 @@ services:
     runtime: node
     plan: free
     region: oregon
+    repo: https://github.com/RohitSah23/scout
     branch: main
     autoDeploy: true
     buildCommand: npm ci --include=dev && npm run build
@@ -66,6 +67,7 @@ services:
     runtime: node
     plan: free
     region: oregon
+    repo: https://github.com/RohitSah23/scout
     branch: main
     autoDeploy: true
     buildCommand: npm ci --include=dev && npm run build
