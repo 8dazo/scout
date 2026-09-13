@@ -35,7 +35,7 @@ export const SLIDES: Slide[] = [
     ],
     links: [
       {
-        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com/",
+        href: "https://scout-web-ethglobal-2026.onrender.com/",
         label: "scout-web-ethglobal-2026.onrender.com",
       },
     ],
@@ -196,7 +196,7 @@ export const SLIDES: Slide[] = [
     items: [
       {
         text: "Report: cbBTC on Aave V3 — opportunity 52.0, risk 30, 100% confidence, 21 evidence sources",
-        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com//research/f28e5c0e-0081-435c-8cad-18b60713534f",
+        href: "https://scout-web-ethglobal-2026.onrender.com/research/f28e5c0e-0081-435c-8cad-18b60713534f",
       },
       {
         text: "Earlier verified paid run of the same loop: opportunity 53.7, risk 30, 16 candidates, 20 initial sources, $0.03 spent",
@@ -205,19 +205,19 @@ export const SLIDES: Slide[] = [
     ],
     links: [
       {
-        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com/",
+        href: "https://scout-web-ethglobal-2026.onrender.com/",
         label: "Web",
       },
       {
-        href: "https://scout-api-ethglobal-2026-rljy.onrender.com/health",
+        href: "https://scout-api-ethglobal-2026.onrender.com/health",
         label: "API health",
       },
       {
-        href: "https://scout-api-ethglobal-2026-rljy.onrender.com/mcp",
+        href: "https://scout-api-ethglobal-2026.onrender.com/mcp",
         label: "MCP",
       },
       {
-        href: "https://scout-api-ethglobal-2026-rljy.onrender.com/openapi.json",
+        href: "https://scout-api-ethglobal-2026.onrender.com/openapi.json",
         label: "OpenAPI",
       },
     ],
@@ -255,17 +255,17 @@ export const SLIDES: Slide[] = [
       "Rank the top lending assets across Base protocols. Which token market has the best opportunity for a new developer product? I have a $0.50 research budget.",
     closing: "Scout turns uncertain Web3 questions into defensible, paid, on-chain decisions.",
     links: [
-      { href: "https://github.com/RohitSah23/scout", label: "Repo" },
-      { href: "https://scout-web-ethglobal-2026-y6tp.onrender.com/", label: "App" },
+      { href: "https://github.com/8dazo/scout", label: "Repo" },
+      { href: "https://scout-web-ethglobal-2026.onrender.com/", label: "App" },
       {
-        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com/pitch-deck",
+        href: "https://scout-web-ethglobal-2026.onrender.com/pitch-deck",
         label: "Deck",
       },
       {
-        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com//research/f28e5c0e-0081-435c-8cad-18b60713534f",
+        href: "https://scout-web-ethglobal-2026.onrender.com/research/f28e5c0e-0081-435c-8cad-18b60713534f",
         label: "Report",
       },
-      { href: "https://scout-api-ethglobal-2026-rljy.onrender.com/mcp", label: "MCP" },
+      { href: "https://scout-api-ethglobal-2026.onrender.com/mcp", label: "MCP" },
     ],
     notes:
       "If you remember one sentence: Scout turns uncertain Web3 questions into defensible, paid, on-chain decisions. Live Graph. A three-cent policy payment when the answer is thin. A name you can resolve. That is the demo. Thank you.",

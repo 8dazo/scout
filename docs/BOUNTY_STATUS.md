@@ -32,14 +32,14 @@ The visible repository history starts on September 5, 2026, after ETHOnline bega
 ## Verified live evidence
 
 - Public repository: <https://github.com/8dazo/scout/tree/dev>
-- Public web app: <https://scout-web-ethglobal-2026-y6tp.onrender.com/>
-- Public API: <https://scout-api-ethglobal-2026-rljy.onrender.com>. MCP target: <https://scout-api-ethglobal-2026-rljy.onrender.com/mcp>; local initialize passes, but the stale public instance returned HTTP 500 during the 13 September readiness check and must be redeployed before submission.
+- Public web app: <https://scout-web-ethglobal-2026.onrender.com/>
+- Public API: <https://scout-api-ethglobal-2026.onrender.com>. MCP target: <https://scout-api-ethglobal-2026.onrender.com/mcp>; local initialize passes, but the stale public instance returned HTTP 500 during the 13 September readiness check and must be redeployed before submission.
 - Qualification implementation: commit [`3d74c61`](https://github.com/8dazo/scout/commit/3d74c61c3fe0163d549b0088632089e9ba70658c)
 - Privy payer: `0x38B28037192d6b44B537c2c6F717f150a1989E69`
 - Privy policy: `eebmveuo1rtadd1pua6vll2x`
 - Wallet funding swap: [0x7c771b…beff1](https://sepolia.basescan.org/tx/0x7c771bbf6b70ea8b2e3ef229344f924b3bd7ac869462c09f68ef2ccfaf3beff1)
 - x402 payment: [0xb66194…df537](https://sepolia.basescan.org/tx/0xb66194b37432059c1fba839d66e924281ed5984a5580c6ca2d9ad342a11df537)
-- Preserved Render report: <https://scout-web-ethglobal-2026-y6tp.onrender.com//research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183>
+- Preserved Render report: <https://scout-web-ethglobal-2026.onrender.com/research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183>
 - Production Render x402 payment: [0xe3bd6a…07356b](https://sepolia.basescan.org/tx/0xe3bd6a4311c7b5cf49372e1f0bb58905a7b3f9b8c5e8b371c5672cac2307356b)
 - Preserved-report x402 payment: [0x487cf1…39e6c8](https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8)
 - ENSv2 identity: scout-agent.eth → 0x9BCBB965C4886dDc4ab769f6141a1Ea26a593eaE
