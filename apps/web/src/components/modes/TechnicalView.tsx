@@ -21,7 +21,11 @@ export function TechnicalView() {
      ↓
 THE GRAPH · OPENSEO
      ↓
-SCORING ENGINE
+SCORING · UNCERTAINTY GATE
+     ↓
+PRIVY POLICY WALLET · X402
+     ↓
+ENSV2 STATUS
      ↓
 RECOMMENDATION`}
           </pre>

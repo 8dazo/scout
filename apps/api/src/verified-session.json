@@ -1,0 +1,1609 @@
+{
+  "researchId": "3c47f2ea-52a1-40fc-b0cf-a6776d7c5183",
+  "status": "completed",
+  "request": "Rank the top lending assets across Base protocols. Which token market has the best opportunity for a new developer product? I have a $0.50 research budget.",
+  "chain": "base",
+  "category": "lending",
+  "researchMode": "tokens",
+  "agent": {
+    "name": "scout",
+    "wallet": "0x38B28037192d6b44B537c2c6F717f150a1989E69"
+  },
+  "budget": {
+    "initial": 0.5,
+    "spent": 0.03,
+    "remaining": 0.47,
+    "currency": "USDC",
+    "perRequestCap": 0.1
+  },
+  "sources": [
+    {
+      "id": "graph-aave-v3-base-native",
+      "name": "The Graph",
+      "type": "onchain",
+      "cost": 0,
+      "provenance": {
+        "subgraphId": "GQFbb95cE6d8mV989mL5figjaGaKCQB3xqYrr1bRyXqF",
+        "deploymentId": "QmXZ53Kzz3L2LvvbGve2ebtLKWMhjjB1a3U2jnUj2YwGCW",
+        "schemaVersion": "0.0.5",
+        "query": "\nquery AaveV3HourlyTrending($oneHourAgo: Int!) {\n  supplies(\n    first: 1000\n    where: { timestamp_gte: $oneHourAgo }\n    orderBy: timestamp\n    orderDirection: desc\n  ) {\n    timestamp\n    amount\n    assetPriceUSD\n    reserve { symbol decimals }\n  }\n  borrows(\n    first: 1000\n    where: { timestamp_gte: $oneHourAgo }\n    orderBy: timestamp\n    orderDirection: desc\n  ) {\n    timestamp\n    amount\n    assetPriceUSD\n    reserve { symbol decimals }\n  }\n  repays(\n    first: 1000\n    where: { timestamp_gte: $oneHourAgo }\n    orderBy: timestamp\n    orderDirection: desc\n  ) {\n    timestamp\n    amount\n    assetPriceUSD\n    reserve { symbol decimals }\n  }\n  redeemUnderlyings(\n    first: 1000\n    where: { timestamp_gte: $oneHourAgo }\n    orderBy: timestamp\n    orderDirection: desc\n  ) {\n    timestamp\n    amount\n    assetPriceUSD\n    reserve { symbol decimals }\n  }\n  liquidationCalls(\n    first: 200\n    where: { timestamp_gte: $oneHourAgo }\n    orderBy: timestamp\n    orderDirection: desc\n  ) {\n    timestamp\n    collateralAmount\n    principalAmount\n    collateralAssetPriceUSD\n    borrowAssetPriceUSD\n    collateralReserve { symbol decimals }\n    principalReserve { symbol decimals }\n  }\n}\n"
+      },
+      "data": {
+        "live": true,
+        "composable": false,
+        "schemaStandard": "aave-v3-trending",
+        "messariSlug": "aave-v3-base-native",
+        "queryKind": "aave-v3-trending",
+        "sourceProtocol": "Aave V3",
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "graph-moonwell-base",
+      "name": "The Graph",
+      "type": "onchain",
+      "cost": 0,
+      "provenance": {
+        "subgraphId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "deploymentId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "schemaVersion": "2.0.1",
+        "query": "\nquery LendingProtocolMetrics($first: Int!) {\n  protocols(first: $first) {\n    id\n    name\n    slug\n    schemaVersion\n    methodologyVersion\n    totalValueLockedUSD\n    cumulativeUniqueUsers\n  }\n  markets(first: 25, orderBy: totalValueLockedUSD, orderDirection: desc) {\n    id\n    name\n    totalValueLockedUSD\n    totalDepositBalanceUSD\n    totalBorrowBalanceUSD\n    inputToken { symbol decimals }\n  }\n  marketSnapshots: marketDailySnapshots(first: 50, orderBy: timestamp, orderDirection: desc) {\n    timestamp\n    totalValueLockedUSD\n    dailyDepositUSD\n    dailyBorrowUSD\n    market { id }\n  }\n  protocolSnapshots: marketDailySnapshots(first: 30, orderBy: timestamp, orderDirection: desc) {\n    timestamp\n    totalValueLockedUSD\n    dailyDepositUSD\n    dailyBorrowUSD\n    dailyLiquidateUSD\n  }\n}\n"
+      },
+      "data": {
+        "live": true,
+        "composable": true,
+        "schemaStandard": "messari-lending-cdp",
+        "messariSlug": "moonwell-base",
+        "queryKind": "messari",
+        "sourceProtocol": "Moonwell",
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "graph-compound-v3-base",
+      "name": "The Graph",
+      "type": "onchain",
+      "cost": 0,
+      "provenance": {
+        "subgraphId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "deploymentId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "schemaVersion": "3.1.0",
+        "query": "\nquery LendingProtocolMetrics($first: Int!) {\n  protocols(first: $first) {\n    id\n    name\n    slug\n    schemaVersion\n    methodologyVersion\n    totalValueLockedUSD\n    cumulativeUniqueUsers\n  }\n  markets(first: 25, orderBy: totalValueLockedUSD, orderDirection: desc) {\n    id\n    name\n    totalValueLockedUSD\n    totalDepositBalanceUSD\n    totalBorrowBalanceUSD\n    inputToken { symbol decimals }\n  }\n  marketSnapshots: marketDailySnapshots(first: 50, orderBy: timestamp, orderDirection: desc) {\n    timestamp\n    totalValueLockedUSD\n    dailyDepositUSD\n    dailyBorrowUSD\n    market { id }\n  }\n  protocolSnapshots: marketDailySnapshots(first: 30, orderBy: timestamp, orderDirection: desc) {\n    timestamp\n    totalValueLockedUSD\n    dailyDepositUSD\n    dailyBorrowUSD\n    dailyLiquidateUSD\n  }\n}\n"
+      },
+      "data": {
+        "live": true,
+        "composable": true,
+        "schemaStandard": "messari-lending-cdp",
+        "messariSlug": "compound-v3-base",
+        "queryKind": "messari",
+        "sourceProtocol": "Compound V3",
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-cbbtc-aave-v3-base-native-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-cbbtc-moonwell-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-lbtc-moonwell-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-cbxrp-moonwell-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-vvv-moonwell-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-virtual-moonwell-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-sfrax-compound-v3-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-cbbtc-compound-v3-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-cbbtc-compound-v3-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-link-compound-v3-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "openseo-token-teth-compound-v3-base-base",
+      "name": "OpenSEO",
+      "type": "web",
+      "cost": 0,
+      "data": {
+        "live": false,
+        "verifiedSnapshot": true
+      }
+    },
+    {
+      "id": "deep-sfrax-·-compound-v3",
+      "name": "Deep Protocol Analysis",
+      "type": "paid",
+      "cost": 0.03,
+      "payment": "x402",
+      "txRef": "0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8",
+      "data": {
+        "methodology": "Deterministic diagnostics over the candidate evidence submitted to this endpoint; unavailable metrics remain omitted.",
+        "verifiedSnapshot": true
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "id": "token-cbbtc-aave-v3-base-native-base",
+      "assetSymbol": "cbBTC",
+      "sourceProtocol": "Aave V3",
+      "protocol": "cbBTC · Aave V3",
+      "chain": "base",
+      "windowLabel": "1h",
+      "tokenMetrics": {
+        "trendingScore": 186883.418886894,
+        "grossFlowUsd": 1371178.2746899442,
+        "netInflowUsd": 185266.247163786,
+        "txCount": 57,
+        "tvlUsd": 1371178.2746899442
+      },
+      "onchainMetrics": {
+        "tvlChangePct": 13.5,
+        "volumeChangePct": 18.7,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 57,
+        "newUsersChangePct": 28.5,
+        "priorPeriodGrowthPct": 13.5
+      },
+      "provenance": {
+        "subgraphId": "GQFbb95cE6d8mV989mL5figjaGaKCQB3xqYrr1bRyXqF",
+        "deploymentId": "QmXZ53Kzz3L2LvvbGve2ebtLKWMhjjB1a3U2jnUj2YwGCW",
+        "schemaVersion": "0.0.5",
+        "methodologyVersion": "1.1.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-cbbtc-moonwell-base-base",
+      "assetSymbol": "cbBTC",
+      "sourceProtocol": "Moonwell",
+      "protocol": "cbBTC · Moonwell",
+      "chain": "base",
+      "marketId": "0xf877acafa28c19b96727966690b2f44d35ad5976",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 6296350.388294293,
+        "grossFlowUsd": 10836437.611026868,
+        "txCount": 4
+      },
+      "onchainMetrics": {
+        "tvlChangePct": -0.2,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": -0.2
+      },
+      "provenance": {
+        "subgraphId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "deploymentId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "schemaVersion": "2.0.1",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-lbtc-moonwell-base-base",
+      "assetSymbol": "LBTC",
+      "sourceProtocol": "Moonwell",
+      "protocol": "LBTC · Moonwell",
+      "chain": "base",
+      "marketId": "0x10ff57877b79e9bd949b3815220ec87b9fc5d2ee",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 3397304.503156491,
+        "grossFlowUsd": 3441023.631430664,
+        "txCount": 1
+      },
+      "onchainMetrics": {
+        "tvlChangePct": 0,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": 0
+      },
+      "provenance": {
+        "subgraphId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "deploymentId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "schemaVersion": "2.0.1",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-cbxrp-moonwell-base-base",
+      "assetSymbol": "cbXRP",
+      "sourceProtocol": "Moonwell",
+      "protocol": "cbXRP · Moonwell",
+      "chain": "base",
+      "marketId": "0xb4fb8fed5b3aaa8434f0b19b1b623d977e07e86d",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 2755860.427717215,
+        "grossFlowUsd": 3875887.524014988,
+        "txCount": 3
+      },
+      "onchainMetrics": {
+        "tvlChangePct": 0.2,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": 0.2
+      },
+      "provenance": {
+        "subgraphId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "deploymentId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "schemaVersion": "2.0.1",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-vvv-moonwell-base-base",
+      "assetSymbol": "VVV",
+      "sourceProtocol": "Moonwell",
+      "protocol": "VVV · Moonwell",
+      "chain": "base",
+      "marketId": "0xd64bcb70c613a6d1f4d7d57ba64bb4a0767a9682",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 1438979.2861855044,
+        "grossFlowUsd": 1440275.1077701296,
+        "txCount": 3
+      },
+      "onchainMetrics": {
+        "tvlChangePct": -1.1,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": -1.1
+      },
+      "provenance": {
+        "subgraphId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "deploymentId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "schemaVersion": "2.0.1",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-virtual-moonwell-base-base",
+      "assetSymbol": "VIRTUAL",
+      "sourceProtocol": "Moonwell",
+      "protocol": "VIRTUAL · Moonwell",
+      "chain": "base",
+      "marketId": "0xde8df9d942d78ede3ca06e60712582f79cfffc64",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 922777.91307548,
+        "grossFlowUsd": 1727122.120040847,
+        "txCount": 3
+      },
+      "onchainMetrics": {
+        "tvlChangePct": -2.7,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": -2.7
+      },
+      "provenance": {
+        "subgraphId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "deploymentId": "33ex1ExmYQtwGVwri1AP3oMFPGSce6YbocBP7fWbsBrg",
+        "schemaVersion": "2.0.1",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-sfrax-compound-v3-base-base",
+      "assetSymbol": "sFRAX",
+      "sourceProtocol": "Compound V3",
+      "protocol": "sFRAX · Compound V3",
+      "chain": "base",
+      "marketId": "0x3afdc9bca9213a35503b077a6072f3d0d5ab0840a663b02cf0a4b149d2ad41910cb81e23e1c41c32",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 36695854.492873885,
+        "grossFlowUsd": 36695854.492873885,
+        "txCount": 0
+      },
+      "onchainMetrics": {
+        "tvlChangePct": 0,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": 0
+      },
+      "provenance": {
+        "subgraphId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "deploymentId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "schemaVersion": "3.1.0",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      },
+      "deepAnalysis": {
+        "walletGrowth": 0,
+        "growthQuality": "weak",
+        "riskFactors": [],
+        "confidenceBoost": 0.12
+      }
+    },
+    {
+      "id": "token-cbbtc-compound-v3-base-base",
+      "assetSymbol": "cbBTC",
+      "sourceProtocol": "Compound V3",
+      "protocol": "cbBTC · Compound V3",
+      "chain": "base",
+      "marketId": "0xc3d688b66703497daa19211eedff47f25384cdc3cbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 27675838.793849897,
+        "grossFlowUsd": 27675838.793849897,
+        "txCount": 1
+      },
+      "onchainMetrics": {
+        "tvlChangePct": 0,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": 0
+      },
+      "provenance": {
+        "subgraphId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "deploymentId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "schemaVersion": "3.1.0",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-cbbtc-compound-v3-base-base",
+      "assetSymbol": "cbBTC",
+      "sourceProtocol": "Compound V3",
+      "protocol": "cbBTC · Compound V3",
+      "chain": "base",
+      "marketId": "0x3afdc9bca9213a35503b077a6072f3d0d5ab0840cbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 21256143.55584548,
+        "grossFlowUsd": 21256143.55584548,
+        "txCount": 0
+      },
+      "onchainMetrics": {
+        "tvlChangePct": 0,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": 0
+      },
+      "provenance": {
+        "subgraphId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "deploymentId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "schemaVersion": "3.1.0",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-link-compound-v3-base-base",
+      "assetSymbol": "LINK",
+      "sourceProtocol": "Compound V3",
+      "protocol": "LINK · Compound V3",
+      "chain": "base",
+      "marketId": "0xc3d688b66703497daa19211eedff47f25384cdc3514910771af9ca656af840dff83e8264ecf986ca",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 5435538.133328823,
+        "grossFlowUsd": 5435538.133328823,
+        "txCount": 2
+      },
+      "onchainMetrics": {
+        "tvlChangePct": -0.7,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": -0.7
+      },
+      "provenance": {
+        "subgraphId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "deploymentId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "schemaVersion": "3.1.0",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    },
+    {
+      "id": "token-teth-compound-v3-base-base",
+      "assetSymbol": "tETH",
+      "sourceProtocol": "Compound V3",
+      "protocol": "tETH · Compound V3",
+      "chain": "base",
+      "marketId": "0xa17581a9e3356d9a858b789d68b4d866e593ae94d11c452fc99cf405034ee446803b6f6c1f6d5ed8",
+      "windowLabel": "7d",
+      "tokenMetrics": {
+        "tvlUsd": 4098429.1245188913,
+        "grossFlowUsd": 4098429.1245188913,
+        "txCount": 0
+      },
+      "onchainMetrics": {
+        "tvlChangePct": 0,
+        "volumeChangePct": 0,
+        "txChangePct": 0,
+        "activeAddressesChangePct": 0,
+        "newUsersChangePct": 0,
+        "priorPeriodGrowthPct": 0
+      },
+      "provenance": {
+        "subgraphId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "deploymentId": "AwoxEZbiWLvv6e3QdvdMZw4WDURdGbvPfHmZRc8Dpfz9",
+        "schemaVersion": "3.1.0",
+        "methodologyVersion": "1.0.0"
+      },
+      "seoMetrics": {
+        "searchDemandChangePct": 0,
+        "organicVisibility": 0,
+        "contentGapScore": 20,
+        "competitorSerpDominance": 50,
+        "developerIntentScore": 20,
+        "aiVisibilityScore": 0
+      }
+    }
+  ],
+  "decisionLog": [
+    {
+      "timestamp": "2026-09-13T10:22:52.656Z",
+      "message": "Mission received.",
+      "level": "info",
+      "eventType": "mission.received"
+    },
+    {
+      "timestamp": "2026-09-13T10:22:52.656Z",
+      "message": "Research plan created.",
+      "level": "info",
+      "eventType": "plan.created"
+    },
+    {
+      "timestamp": "2026-09-13T10:22:52.658Z",
+      "message": "Graph Subgraph discovery started.",
+      "level": "info",
+      "eventType": "graph.discovery"
+    },
+    {
+      "timestamp": "2026-09-13T10:22:53.353Z",
+      "message": "Queried 5 lending subgraphs on base — 3 protocols returned token-level data, 11 lending assets ranked (2 Messari-composable).",
+      "level": "info",
+      "eventType": "graph.query"
+    },
+    {
+      "timestamp": "2026-09-13T10:22:53.354Z",
+      "message": "Composable query — 1 Messari template × 2 protocols, top markets per protocol (+ one native Aave adapter).",
+      "level": "info",
+      "eventType": "graph.complete"
+    },
+    {
+      "timestamp": "2026-09-13T10:22:53.355Z",
+      "message": "11 lending assets ranked across 3 protocols (2 skipped).",
+      "level": "info",
+      "eventType": "candidates.updated"
+    },
+    {
+      "timestamp": "2026-09-13T10:22:53.359Z",
+      "message": "OpenSEO keyword analysis started.",
+      "level": "info",
+      "eventType": "openseo.started"
+    },
+    {
+      "timestamp": "2026-09-13T10:23:42.129Z",
+      "message": "OpenSEO complete — 11 protocol(s) had sparse keyword data (cbBTC · Aave V3, cbBTC · Moonwell, LBTC · Moonwell…); scored with neutral SEO baseline.",
+      "level": "warn",
+      "eventType": "openseo.complete"
+    },
+    {
+      "timestamp": "2026-09-13T10:23:42.138Z",
+      "message": "11 candidates scored.",
+      "level": "info",
+      "eventType": "scores.provisional"
+    },
+    {
+      "timestamp": "2026-09-13T10:23:42.203Z",
+      "message": "Uncertainty detected: Resolve uncertainty between sFRAX · Compound V3 and cbBTC · Aave V3 (3.3pt gap, confidence 100.0). High-conviction decision requires candidate-specific diagnostics.",
+      "level": "warn",
+      "eventType": "uncertainty.detected"
+    },
+    {
+      "timestamp": "2026-09-13T10:23:42.209Z",
+      "message": "Payment authorization required: $0.03 USDC for deep analysis report on sFRAX · Compound V3.",
+      "level": "payment",
+      "eventType": "payment.required"
+    },
+    {
+      "timestamp": "2026-09-13T10:25:19.677Z",
+      "message": "Authorizing payment of $0.03 USDC via Privy policy…",
+      "level": "payment",
+      "eventType": "payment.pending"
+    },
+    {
+      "timestamp": "2026-09-13T10:25:19.953Z",
+      "message": "ENSv2 treasury cap resolved from scout-agent.eth: $0.50 USDC.",
+      "level": "success",
+      "payload": {
+        "ensName": "scout-agent.eth",
+        "ensBudgetCap": 0.5
+      }
+    },
+    {
+      "timestamp": "2026-09-13T10:25:22.445Z",
+      "message": "Payment settled from a policy-controlled Privy wallet (0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8).",
+      "level": "success",
+      "eventType": "payment.settled"
+    },
+    {
+      "timestamp": "2026-09-13T10:25:22.450Z",
+      "message": "Paid diagnostics received for sFRAX · Compound V3 from 6 observed fields.",
+      "level": "info",
+      "eventType": "deep_analysis.received"
+    },
+    {
+      "timestamp": "2026-09-13T10:25:22.496Z",
+      "message": "Generating recommendation narrative via OpenRouter…",
+      "level": "info"
+    },
+    {
+      "timestamp": "2026-09-13T10:25:25.860Z",
+      "message": "OpenRouter narrative complete.",
+      "level": "success"
+    },
+    {
+      "timestamp": "2026-09-13T10:25:25.863Z",
+      "message": "Final recommendation generated.",
+      "level": "success",
+      "eventType": "recommendation.generated"
+    },
+    {
+      "timestamp": "2026-09-13T10:25:26.834Z",
+      "message": "ENSv2 status was not published in this run: the Sepolia RPC rate limit was exceeded.",
+      "level": "warn",
+      "eventType": "ens.failed"
+    },
+    {
+      "timestamp": "2026-09-13T10:25:26.838Z",
+      "message": "Research complete.",
+      "level": "success",
+      "eventType": "research.completed"
+    }
+  ],
+  "createdAt": "2026-09-13T10:22:52.656Z",
+  "updatedAt": "2026-09-13T10:25:26.843Z",
+  "scoreBreakdown": {
+    "modelVersion": "scout-v1",
+    "disclaimer": "Scout's research score based on the configured evidence model.",
+    "candidates": [
+      {
+        "protocol": "sFRAX · Compound V3",
+        "chain": "base",
+        "assetSymbol": "sFRAX",
+        "sourceProtocol": "Compound V3",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 50,
+            "rationale": "TVL +0.0%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-sfrax-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-sfrax-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-sfrax-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 100,
+            "rationale": "On-chain rank 100.0 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-sfrax-compound-v3-base-base",
+              "openseo-sfrax-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-sfrax-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, paid deep analysis included",
+            "evidenceIds": [
+              "token-sfrax-compound-v3-base-base",
+              "openseo-sfrax-·-compound-v3-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 51.4,
+        "opportunityScore": 51.4,
+        "riskScore": 30,
+        "rank": 1,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          49.4,
+          53.4
+        ]
+      },
+      {
+        "protocol": "cbBTC · Aave V3",
+        "chain": "base",
+        "assetSymbol": "cbBTC",
+        "sourceProtocol": "Aave V3",
+        "windowLabel": "1h",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 61.3,
+            "rationale": "TVL +13.5%, volume +18.7%, txs +0.0%",
+            "evidenceIds": [
+              "token-cbbtc-aave-v3-base-native-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 91.4,
+            "rationale": "Active addresses +57.0%, new users +28.5%",
+            "evidenceIds": [
+              "token-cbbtc-aave-v3-base-native-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-cbbtc-·-aave-v3-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 0.5,
+            "rationale": "On-chain rank 0.5 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-cbbtc-aave-v3-base-native-base",
+              "openseo-cbbtc-·-aave-v3-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-cbbtc-·-aave-v3-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-cbbtc-aave-v3-base-native-base",
+              "openseo-cbbtc-·-aave-v3-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 48.1,
+        "opportunityScore": 48.1,
+        "riskScore": 30,
+        "rank": 2,
+        "momentum": "heating",
+        "gapSignal": "on-chain +29.7% but search +0.0%",
+        "flags": [
+          "onchain_web_divergence",
+          "under_marketed_gem"
+        ],
+        "sensitivityBand": [
+          46.1,
+          50.1
+        ]
+      },
+      {
+        "protocol": "cbBTC · Compound V3",
+        "chain": "base",
+        "assetSymbol": "cbBTC",
+        "sourceProtocol": "Compound V3",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 50,
+            "rationale": "TVL +0.0%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-cbbtc-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-cbbtc-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-cbbtc-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 75.4,
+            "rationale": "On-chain rank 75.4 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-cbbtc-compound-v3-base-base",
+              "openseo-cbbtc-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-cbbtc-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-cbbtc-compound-v3-base-base",
+              "openseo-cbbtc-·-compound-v3-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 47.7,
+        "opportunityScore": 47.7,
+        "riskScore": 30,
+        "rank": 3,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          45.7,
+          49.7
+        ]
+      },
+      {
+        "protocol": "cbBTC · Compound V3",
+        "chain": "base",
+        "assetSymbol": "cbBTC",
+        "sourceProtocol": "Compound V3",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 50,
+            "rationale": "TVL +0.0%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-cbbtc-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-cbbtc-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-cbbtc-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 57.9,
+            "rationale": "On-chain rank 57.9 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-cbbtc-compound-v3-base-base",
+              "openseo-cbbtc-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-cbbtc-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-cbbtc-compound-v3-base-base",
+              "openseo-cbbtc-·-compound-v3-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 45.1,
+        "opportunityScore": 45.1,
+        "riskScore": 30,
+        "rank": 4,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          43.1,
+          47.1
+        ]
+      },
+      {
+        "protocol": "cbBTC · Moonwell",
+        "chain": "base",
+        "assetSymbol": "cbBTC",
+        "sourceProtocol": "Moonwell",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 49.9,
+            "rationale": "TVL -0.2%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-cbbtc-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-cbbtc-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-cbbtc-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 29.5,
+            "rationale": "On-chain rank 29.5 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-cbbtc-moonwell-base-base",
+              "openseo-cbbtc-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-cbbtc-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-cbbtc-moonwell-base-base",
+              "openseo-cbbtc-·-moonwell-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 40.8,
+        "opportunityScore": 40.8,
+        "riskScore": 30,
+        "rank": 5,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          38.8,
+          42.8
+        ]
+      },
+      {
+        "protocol": "LINK · Compound V3",
+        "chain": "base",
+        "assetSymbol": "LINK",
+        "sourceProtocol": "Compound V3",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 49.8,
+            "rationale": "TVL -0.7%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-link-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-link-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-link-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 14.8,
+            "rationale": "On-chain rank 14.8 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-link-compound-v3-base-base",
+              "openseo-link-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-link-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-link-compound-v3-base-base",
+              "openseo-link-·-compound-v3-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 38.6,
+        "opportunityScore": 38.6,
+        "riskScore": 30,
+        "rank": 6,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          36.6,
+          40.6
+        ]
+      },
+      {
+        "protocol": "tETH · Compound V3",
+        "chain": "base",
+        "assetSymbol": "tETH",
+        "sourceProtocol": "Compound V3",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 50,
+            "rationale": "TVL +0.0%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-teth-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-teth-compound-v3-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-teth-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 11.2,
+            "rationale": "On-chain rank 11.2 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-teth-compound-v3-base-base",
+              "openseo-teth-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-teth-·-compound-v3-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-teth-compound-v3-base-base",
+              "openseo-teth-·-compound-v3-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 38.1,
+        "opportunityScore": 38.1,
+        "riskScore": 30,
+        "rank": 7,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          36.1,
+          40.1
+        ]
+      },
+      {
+        "protocol": "cbXRP · Moonwell",
+        "chain": "base",
+        "assetSymbol": "cbXRP",
+        "sourceProtocol": "Moonwell",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 50.1,
+            "rationale": "TVL +0.2%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-cbxrp-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-cbxrp-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-cbxrp-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 10.6,
+            "rationale": "On-chain rank 10.6 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-cbxrp-moonwell-base-base",
+              "openseo-cbxrp-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-cbxrp-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-cbxrp-moonwell-base-base",
+              "openseo-cbxrp-·-moonwell-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 38,
+        "opportunityScore": 38,
+        "riskScore": 30,
+        "rank": 8,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          36,
+          40
+        ]
+      },
+      {
+        "protocol": "LBTC · Moonwell",
+        "chain": "base",
+        "assetSymbol": "LBTC",
+        "sourceProtocol": "Moonwell",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 50,
+            "rationale": "TVL +0.0%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-lbtc-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-lbtc-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-lbtc-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 9.4,
+            "rationale": "On-chain rank 9.4 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-lbtc-moonwell-base-base",
+              "openseo-lbtc-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-lbtc-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-lbtc-moonwell-base-base",
+              "openseo-lbtc-·-moonwell-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 37.8,
+        "opportunityScore": 37.8,
+        "riskScore": 30,
+        "rank": 9,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          35.8,
+          39.8
+        ]
+      },
+      {
+        "protocol": "VVV · Moonwell",
+        "chain": "base",
+        "assetSymbol": "VVV",
+        "sourceProtocol": "Moonwell",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 49.6,
+            "rationale": "TVL -1.1%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-vvv-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-vvv-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-vvv-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 3.9,
+            "rationale": "On-chain rank 3.9 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-vvv-moonwell-base-base",
+              "openseo-vvv-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-vvv-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-vvv-moonwell-base-base",
+              "openseo-vvv-·-moonwell-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 36.9,
+        "opportunityScore": 36.9,
+        "riskScore": 30,
+        "rank": 10,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          34.9,
+          38.9
+        ]
+      },
+      {
+        "protocol": "VIRTUAL · Moonwell",
+        "chain": "base",
+        "assetSymbol": "VIRTUAL",
+        "sourceProtocol": "Moonwell",
+        "windowLabel": "7d",
+        "dimensions": [
+          {
+            "key": "onchainGrowth",
+            "weight": 0.3,
+            "score": 49.1,
+            "rationale": "TVL -2.7%, volume +0.0%, txs +0.0%",
+            "evidenceIds": [
+              "token-virtual-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "userGrowth",
+            "weight": 0.2,
+            "score": 50,
+            "rationale": "Active addresses +0.0%, new users +0.0%",
+            "evidenceIds": [
+              "token-virtual-moonwell-base-base"
+            ]
+          },
+          {
+            "key": "searchDemand",
+            "weight": 0.2,
+            "score": 8,
+            "rationale": "Search demand +0.0%, developer-intent 20.0/100",
+            "evidenceIds": [
+              "openseo-virtual-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "competitiveGap",
+            "weight": 0.15,
+            "score": 4.7,
+            "rationale": "On-chain rank 4.7 vs SERP dominance 50.0",
+            "evidenceIds": [
+              "token-virtual-moonwell-base-base",
+              "openseo-virtual-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "seoOpportunity",
+            "weight": 0.1,
+            "score": 48,
+            "rationale": "Organic visibility 0.0/100, content gap 20.0/100",
+            "evidenceIds": [
+              "openseo-virtual-·-moonwell-base"
+            ]
+          },
+          {
+            "key": "evidenceConfidence",
+            "weight": 0.05,
+            "score": 100,
+            "rationale": "15 sources, free evidence only",
+            "evidenceIds": [
+              "token-virtual-moonwell-base-base",
+              "openseo-virtual-·-moonwell-base",
+              "deep-sfrax-·-compound-v3"
+            ]
+          }
+        ],
+        "composite": 36.8,
+        "opportunityScore": 36.8,
+        "riskScore": 30,
+        "rank": 11,
+        "momentum": "stable",
+        "flags": [],
+        "sensitivityBand": [
+          34.8,
+          38.8
+        ]
+      }
+    ],
+    "winner": "sFRAX · Compound V3",
+    "confidence": 100
+  },
+  "confidence": 100,
+  "paymentReceipt": {
+    "amount": 0.03,
+    "currency": "USDC",
+    "payer": "0x38B28037192d6b44B537c2c6F717f150a1989E69",
+    "payee": "0xb92fe771ed8233e5198bf3e61f2f811d90bd524c",
+    "policyId": "eebmveuo1rtadd1pua6vll2x",
+    "network": "Base Sepolia",
+    "txHash": "0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8",
+    "explorerUrl": "https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8",
+    "serviceUrl": "https://scout-api-ethglobal-2026-rljy.onrender.com/api/deep-protocol-analysis",
+    "settledAt": "2026-09-13T10:25:22.445Z"
+  },
+  "recommendation": {
+    "winner": "sFRAX · Compound V3",
+    "score": 51.4,
+    "riskScore": 30,
+    "summary": "Prioritize sFRAX on Compound V3: a 51.4/100 opportunity score, 30/100 risk score, stable momentum, and no gap signal make it the strongest Base lending focus.",
+    "why": [
+      "onchainGrowth=50 and userGrowth=50 show balanced adoption without explosive momentum.",
+      "competitiveGap=100 and seoOpportunity=48 indicate meaningful whitespace despite searchDemand=8.",
+      "evidenceConfidence=100 supports a low-budget, data-first product build."
+    ],
+    "action": "Build a lightweight sFRAX liquidity-monitoring dashboard for Compound V3 using public Base data; spend the $0.50 budget on one targeted developer-interview incentive before expanding."
+  }
+}

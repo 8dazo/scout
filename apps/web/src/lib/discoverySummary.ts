@@ -6,11 +6,23 @@ export interface SkippedDeployment {
   reason: string;
 }
 
+export interface GraphDeploymentRow {
+  protocol: string;
+  subgraphId?: string;
+  schemaVersion?: string;
+  queryKind: string;
+  composable: boolean;
+}
+
 export interface DiscoverySummary {
   discoveredCount: number;
   liveCount: number;
   skippedCount: number;
   skipped: SkippedDeployment[];
+  messariProtocolCount?: number;
+  schemaStandard?: string;
+  composable?: boolean;
+  deployments: GraphDeploymentRow[];
 }
 
 const SKIP_PATTERN = /^(.+?)\s+\(([^)]+)\):\s*(.+)$/;
@@ -30,10 +42,39 @@ function payloadNumber(payload: Record<string, unknown> | undefined, key: string
   return typeof value === "number" ? value : undefined;
 }
 
+function payloadString(payload: Record<string, unknown> | undefined, key: string): string | undefined {
+  const value = payload?.[key];
+  return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+function payloadBoolean(payload: Record<string, unknown> | undefined, key: string): boolean | undefined {
+  const value = payload?.[key];
+  return typeof value === "boolean" ? value : undefined;
+}
+
 function payloadSkipped(payload: Record<string, unknown> | undefined): string[] {
   const value = payload?.skipped;
   if (!Array.isArray(value)) return [];
   return value.filter((item): item is string => typeof item === "string");
+}
+
+function graphDeploymentsFromSession(session: ResearchSession): GraphDeploymentRow[] {
+  return session.sources
+    .filter((source) => source.type === "onchain")
+    .map((source) => {
+      const data = source.data ?? {};
+      const queryKind = typeof data.queryKind === "string" ? data.queryKind : "unknown";
+      return {
+        protocol:
+          typeof data.sourceProtocol === "string"
+            ? data.sourceProtocol
+            : source.id.replace(/^graph-/, ""),
+        subgraphId: source.provenance?.subgraphId,
+        schemaVersion: source.provenance?.schemaVersion,
+        queryKind,
+        composable: data.composable === true,
+      };
+    });
 }
 
 export function getDiscoverySummary(session: ResearchSession | null): DiscoverySummary | null {
@@ -41,6 +82,8 @@ export function getDiscoverySummary(session: ResearchSession | null): DiscoveryS
 
   const candidatesEntry = session.decisionLog.find((entry) => entry.eventType === "candidates.updated");
   const graphEntry = session.decisionLog.find((entry) => entry.eventType === "graph.query");
+  const graphComplete = session.decisionLog.find((entry) => entry.eventType === "graph.complete");
+  const graphPayload = graphComplete?.payload ?? graphEntry?.payload;
 
   const discoveredCount =
     payloadNumber(candidatesEntry?.payload, "discoveredCount") ??
@@ -68,7 +111,21 @@ export function getDiscoverySummary(session: ResearchSession | null): DiscoveryS
     liveCount,
     skippedCount,
     skipped,
+    messariProtocolCount: payloadNumber(graphPayload, "messariProtocolCount"),
+    schemaStandard: payloadString(graphPayload, "schemaStandard"),
+    composable: payloadBoolean(graphPayload, "composable"),
+    deployments: graphDeploymentsFromSession(session),
   };
+}
+
+export function formatGraphStandardLine(summary: DiscoverySummary): string | null {
+  const messari = summary.messariProtocolCount;
+  if (messari == null || messari <= 0) return null;
+  const standard = summary.schemaStandard ?? "messari-lending-cdp";
+  const native = summary.deployments.filter((row) => !row.composable).length;
+  const nativeNote =
+    native > 0 ? ` · ${native} native adapter${native === 1 ? "" : "s"} labelled separately` : "";
+  return `1 ${standard} query × ${messari} protocol${messari === 1 ? "" : "s"}${nativeNote}`;
 }
 
 export function isLiveCandidate(

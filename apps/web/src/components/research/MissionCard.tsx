@@ -15,7 +15,7 @@ export function MissionCard({
     <button type="button" onClick={onSelect} className="text-left w-full group">
       <Card className="h-full transition-all group-hover:shadow-brutal group-hover:-translate-y-0.5">
         <p className="font-display text-xs uppercase tracking-widest text-signal mb-3">{tag}</p>
-        <p className="text-sm leading-relaxed text-ink/80">&ldquo;{prompt}&rdquo;</p>
+        <p className="text-base leading-relaxed text-ink/90">{prompt}</p>
       </Card>
     </button>
   );

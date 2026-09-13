@@ -1,6 +1,7 @@
 node_modules
 dist
 .next
+.next-fonts
 .turbo
 .env
 .env.local
@@ -8,4 +9,5 @@ dist
 *.sqlite
 .scout-data
 .DS_Store
+.cursor
 coverage

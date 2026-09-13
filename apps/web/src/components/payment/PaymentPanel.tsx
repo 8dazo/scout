@@ -52,10 +52,19 @@ export function PaymentPanel({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-paper/95 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="max-w-2xl w-full space-y-8 py-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40" aria-hidden />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="payment-dialog-title"
+        className="relative z-50 w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-paper border-brutal p-6 md:p-8 space-y-8"
+      >
         <div className="text-center">
-          <h1 className="font-display text-3xl md:text-4xl uppercase tracking-wide">
+          <h1
+            id="payment-dialog-title"
+            className="font-display text-3xl md:text-4xl uppercase tracking-wide"
+          >
             Scout Needs More Evidence
           </h1>
         </div>
@@ -65,9 +74,12 @@ export function PaymentPanel({
             <UncertaintyPanel session={session} paymentPending={paymentPending} />
 
             <Card shadow>
-              <p className="font-display text-xs uppercase tracking-widest text-signal">Paid Research</p>
+              <p className="font-display text-xs uppercase tracking-widest text-signal">Scout treasury pays</p>
               <h2 className="font-display text-xl uppercase mt-2">{paymentPending.serviceName}</h2>
               <p className="font-mono text-3xl mt-4">${paymentPending.amount.toFixed(2)} USDC</p>
+              <p className="mt-2 font-mono text-xs text-ink/60">
+                Visitor wallet is not charged. Authorize lets Scout spend from its Privy policy wallet.
+              </p>
 
               <div className="mt-6 space-y-4 text-sm">
                 <div>
@@ -100,7 +112,7 @@ export function PaymentPanel({
                 onClick={handleAuthorize}
                 className="flex-1"
               >
-                Authorize ${paymentPending.amount.toFixed(2)}
+                Authorize Scout to pay ${paymentPending.amount.toFixed(2)} from its Privy policy wallet
               </Button>
               <Button variant="secondary" disabled={loading} onClick={handleSkip} className="flex-1">
                 Skip
