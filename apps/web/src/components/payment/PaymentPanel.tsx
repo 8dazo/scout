@@ -52,10 +52,19 @@ export function PaymentPanel({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-paper/95 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="max-w-2xl w-full space-y-8 py-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-ink/40" aria-hidden />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="payment-dialog-title"
+        className="relative z-50 w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-paper border-brutal p-6 md:p-8 space-y-8"
+      >
         <div className="text-center">
-          <h1 className="font-display text-3xl md:text-4xl uppercase tracking-wide">
+          <h1
+            id="payment-dialog-title"
+            className="font-display text-3xl md:text-4xl uppercase tracking-wide"
+          >
             Scout Needs More Evidence
           </h1>
         </div>

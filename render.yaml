@@ -16,15 +16,15 @@ services:
       - key: NPM_CONFIG_INCLUDE
         value: dev
       - key: PUBLIC_API_URL
-        value: https://scout-api-ethglobal-2026.onrender.com
+        value: https://scout-api-ethglobal-2026-rljy.onrender.com
       - key: DEEP_ANALYSIS_URL
-        value: https://scout-api-ethglobal-2026.onrender.com/api/deep-protocol-analysis
+        value:https://scout-api-ethglobal-2026-rljy.onrender.com/api/deep-protocol-analysis
       - key: OPENROUTER_MODEL
         value: nex-agi/nex-n2.5-mini:free
       - key: OPENROUTER_BASE_URL
         value: https://openrouter.ai/api/v1
       - key: OPENROUTER_SITE_URL
-        value: https://scout-web-ethglobal-2026.onrender.com
+        value: https://scout-web-ethglobal-2026-y6tp.onrender.com/
       - key: OPENROUTER_SITE_NAME
         value: Scout
       - key: X402_FACILITATOR_URL
@@ -79,6 +79,6 @@ services:
       - key: NPM_CONFIG_INCLUDE
         value: dev
       - key: NEXT_PUBLIC_API_URL
-        value: https://scout-api-ethglobal-2026.onrender.com
+        value: https://scout-api-ethglobal-2026-rljy.onrender.com
       - key: NEXT_PUBLIC_PRIVY_APP_ID
         sync: false

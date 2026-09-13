@@ -141,6 +141,15 @@ if (payToAddress && /^0x[0-9a-fA-F]{40}$/.test(payToAddress)) {
   );
 }
 
+app.get("/", (c) =>
+  c.json({
+    ok: true,
+    service: "scout-api",
+    health: "/health",
+    docs: "/openapi.json",
+  }),
+);
+
 app.get("/health", (c) => c.json({ ok: true, service: "scout-api" }));
 
 app.get("/agent/identity", async (c) => {
