@@ -22,9 +22,3 @@
 ## ENSv2
 - The viem adapter writes directly to a configured Sepolia Permissioned Resolver.
 - Missing configuration fails closed. Eligibility begins only after real onchain proof exists.
-
-## Bazantic
-- OpenAPI: `GET /openapi.json`
-- MCP: Streamable HTTP at `/mcp`
-- Local recipe template: `GET /bazantic/recipe`
-- The template is not a published Bazantic gateway or recipe.

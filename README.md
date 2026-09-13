@@ -84,7 +84,7 @@ scout/
 
 ## ✅ Verified Live Hackathon Proof
 
-All proof below was produced by real APIs and public testnet transactions on September 11, 2026. Scout has no simulated settlement or synthetic ENS receipt path.
+The proof below was produced by real APIs and public testnet transactions between September 11 and 13, 2026. Scout has no simulated settlement or synthetic ENS receipt path.
 
 ### Public production deployment
 
@@ -93,14 +93,16 @@ All proof below was produced by real APIs and public testnet transactions on Sep
 | Web dashboard | [scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026.onrender.com) | Render service is live; production Next.js UI loads and Privy becomes ready |
 | API health | [`/health`](https://scout-api-ethglobal-2026.onrender.com/health) | Returns `{"ok":true,"service":"scout-api"}` |
 | Agent identity | [`/agent/identity`](https://scout-api-ethglobal-2026.onrender.com/agent/identity) | Resolves `scout-agent.eth`, EAC permissions, records and the onchain budget |
-| MCP server | [`/mcp`](https://scout-api-ethglobal-2026.onrender.com/mcp) | Stateless Streamable HTTP MCP server exposing `protocol_opportunity_analysis` |
+| MCP server | [`/mcp`](https://scout-api-ethglobal-2026.onrender.com/mcp) | Current build passes MCP initialize locally; redeploy is required to replace the stale public instance that returned HTTP 500 during the 13 September readiness check |
 | OpenAPI | [`/openapi.json`](https://scout-api-ethglobal-2026.onrender.com/openapi.json) | Machine-readable research and x402 service contract |
 
 Both Render services deploy from the public `dev` branch. The versioned [`render.yaml`](render.yaml) contains the complete two-service topology while credentials remain only in Render's encrypted environment.
 
-### Public end-to-end production run
+### Public end-to-end deployed testnet run
 
-The [replayable production report](https://scout-web-ethglobal-2026.onrender.com/research/f28e5c0e-0081-435c-8cad-18b60713534f) queried five live Base lending subgraphs, composed one Messari template across four protocols, ranked 16 assets, completed OpenSEO enrichment, triggered the uncertainty gate, and bought candidate-specific evidence through the deployed x402 endpoint. The Privy policy-approved payment settled [on Base Sepolia](https://sepolia.basescan.org/tx/0xe3bd6a4311c7b5cf49372e1f0bb58905a7b3f9b8c5e8b371c5672cac2307356b) for 0.03 USDC. The final report selected cbBTC on Aave V3 with a 52.0 opportunity score, 30 risk score, 100% evidence confidence and 21 evidence sources.
+The [preserved verified report](https://scout-web-ethglobal-2026.onrender.com/research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183) queried all five configured Base lending deployments. Three returned token-level data in that run: two Messari-composable protocols plus the separately labeled native Aave adapter. Scout ranked 11 assets, disclosed two skipped sources and sparse OpenSEO data, triggered the uncertainty gate at a 3.3-point top-two gap, and bought candidate-specific diagnostics through the deployed x402 endpoint. The Privy policy-approved payment settled [on Base Sepolia](https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8) for 0.03 USDC. The report selected sFRAX on Compound V3 with a 51.4 opportunity score, 30 risk score, 100% evidence confidence and 15 evidence sources.
+
+A compact copy of that real API response is versioned with the API so the proof route survives Render's ephemeral filesystem. It is a historical evidence snapshot, not a claim that its market data remains live after 13 September 2026.
 
 ### Network separation
 
@@ -123,7 +125,7 @@ The same [LENDING_QUERY_TEMPLATE](packages/graph/src/queries.ts) runs against fi
 | QiDao | 9NHJ9k31qaGCYXppm9isJTiEoiB6v3tJDnR6SrQrxcjw | Messari Lending/CDP 1.3.0 |
 | Aave V3 | D7mapexM5ZsQckLJai2FawTKXJ7CqYGKM8PErnS3cJi9 | Messari Lending/CDP 3.1.0 |
 
-A separate Aave V3 native subgraph (GQFbb95cE6d8mV989mL5figjaGaKCQB3xqYrr1bRyXqF, deployment QmXZ53Kzz3L2LvvbGve2ebtLKWMhjjB1a3U2jnUj2YwGCW) supplies one-hour event-level trending data. The verified paid run evaluated 16 token/market candidates from 20 initial sources and selected cbBTC on Aave V3 with opportunity score 53.7 and risk score 30.
+A separate Aave V3 native subgraph (GQFbb95cE6d8mV989mL5figjaGaKCQB3xqYrr1bRyXqF, deployment QmXZ53Kzz3L2LvvbGve2ebtLKWMhjjB1a3U2jnUj2YwGCW) supplies one-hour event-level trending data. The preserved verified run evaluated 11 token/market candidates from 15 evidence sources and selected sFRAX on Compound V3 with opportunity score 51.4 and risk score 30. It also discloses that two configured deployments did not return usable token markets in that run.
 
 ### Privy + x402 — real financial flow
 
@@ -135,7 +137,8 @@ A separate Aave V3 native subgraph (GQFbb95cE6d8mV989mL5figjaGaKCQB3xqYrr1bRyXqF
 | Payee | [0xb92fe771ed8233e5198bf3e61f2f811d90bd524c](https://sepolia.basescan.org/address/0xb92fe771ed8233e5198bf3e61f2f811d90bd524c) |
 | Wallet funding swap | [0x7c771bbf…beff1](https://sepolia.basescan.org/tx/0x7c771bbf6b70ea8b2e3ef229344f924b3bd7ac869462c09f68ef2ccfaf3beff1) — real Uniswap v3 conversion to test USDC |
 | x402 settlement | [0xb66194b3…df537](https://sepolia.basescan.org/tx/0xb66194b37432059c1fba839d66e924281ed5984a5580c6ca2d9ad342a11df537) — 0.03 USDC |
-| Production Render settlement | [0xe3bd6a43…07356b](https://sepolia.basescan.org/tx/0xe3bd6a4311c7b5cf49372e1f0bb58905a7b3f9b8c5e8b371c5672cac2307356b) — 0.03 USDC |
+| Earlier Render settlement | [0xe3bd6a43…07356b](https://sepolia.basescan.org/tx/0xe3bd6a4311c7b5cf49372e1f0bb58905a7b3f9b8c5e8b371c5672cac2307356b) — 0.03 USDC |
+| Preserved report settlement | [0x487cf199…39e6c8](https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8) — 0.03 USDC |
 
 The final research session and UI preserve the payer, payee, amount, network, policy ID, service URL, timestamp, settlement hash and Basescan link in a structured payment receipt.
 
@@ -236,24 +239,24 @@ node apps/agent/dist/index.js "Analyze lending protocols on Base. Best developer
 | **x402** | Machine-native HTTP 402 payment flow for deep analysis reports ($0.03 USDC on Base Sepolia) | [`packages/x402`](packages/x402) |
 | **ENSv2** | Onchain agent identity (scout-agent.eth), Permissioned Resolver, record-scoped Enhanced Access Control, and onchain treasury cap | [`packages/ens`](packages/ens) |
 | **Privy** | Organization treasury embedded wallet, spending policies (per-tx caps, domain allowlists) | [`packages/privy`](packages/privy) |
-| **Bazantic** | Gateway manifest & reusable recipes exposing Scout's intelligence to downstream autonomous agents | [`packages/bazantic`](packages/bazantic) |
-| **Hedera** | Fallback consensus & verifiable audit trail integration | [`packages/hedera`](packages/hedera) |
 
 ---
 
 ## 📊 Opportunity Scoring Model
 
-Scout scores protocols across **6 core dimensions** (0–100 scale):
+Scout's implemented `scout-v1` model scores candidates across **6 evidence dimensions** (0–100 scale):
 
-1. **Onchain Growth (25%)**: TVL growth rate, active borrower momentum, liquidation stability.
-2. **Web & Search Demand (20%)**: Search volume growth, keyword intent, traffic trajectory.
-3. **Competitor Gap (20%)**: Content/SERP weaknesses of incumbent competitors.
-4. **Developer Moat (15%)**: Integration surface, SDK quality, smart contract composability.
-5. **Protocol Health (10%)**: Collateralization ratio stability and bad debt resistance.
-6. **Risk Penalty (10%)**: Smart contract audit status, oracle centralization, regulatory flags.
+1. **Onchain Growth (30%)**: TVL, volume and transaction change.
+2. **User Growth (20%)**: Active-address and new-user change, with a concentration penalty when transaction growth materially outpaces users.
+3. **Search Demand (20%)**: Search-volume and developer-intent signals.
+4. **Competitive Gap (15%)**: The difference between observed onchain rank and web visibility.
+5. **SEO Opportunity (10%)**: Content-gap and organic-visibility signals.
+6. **Evidence Confidence (5%)**: Coverage and quality of the evidence available to the candidate.
+
+Risk is reported separately from the opportunity composite. The model is deterministic and evidence-linked; it is a research heuristic, not a mathematically objective prediction.
 
 ### The Uncertainty Gate
-If the top two protocols have an Opportunity Score difference of `< 10 points` and overall confidence is `< 75%`, Scout's **Uncertainty Gate** automatically triggers an **x402 deep-analysis micro-purchase** to break the tie with granular risk telemetry.
+Scout requests payment authorization for candidate-specific diagnostics when the top-two Opportunity Score gap is `≤ 5 points` **or** confidence is `< 70%`, provided the budget can cover the $0.03 service. A result is treated as clearly resolved without payment only when the leader is ahead by `> 10 points` **and** confidence is `≥ 75%`. In the web flow, the visitor must authorize the agent treasury spend before Scout pays over x402.
 
 ---
 

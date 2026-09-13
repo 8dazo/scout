@@ -11,6 +11,7 @@ const NAV = [
   { href: "/", label: "Research" },
   { href: "/reports", label: "Reports" },
   { href: "/agent", label: "Agent" },
+  { href: "/pitch-deck", label: "Pitch" },
 ];
 
 export function ScoutHeader({

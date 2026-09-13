@@ -35,7 +35,10 @@ export function BudgetDrawer({
         aria-label="Scout treasury"
       >
         <div className="flex justify-between items-center">
-          <h2 className="font-display text-xl uppercase">Scout Treasury</h2>
+          <div>
+            <h2 className="font-display text-xl uppercase">Scout Treasury</h2>
+            <p className="font-mono text-[11px] text-ink/60 mt-1">Privy policy wallet — you do not fund research</p>
+          </div>
           <button
             type="button"
             onClick={onClose}
@@ -74,10 +77,14 @@ export function BudgetDrawer({
               <Badge key={chip}>{chip}</Badge>
             ))}
           </div>
+          <p className="font-mono text-[11px] text-ink/60 mt-3">
+            Max $0.10 per authorization · allowlisted payee only
+          </p>
         </div>
 
         {hasPrivy && (
-          <div>
+          <div className="space-y-2">
+            <p className="font-display text-xs uppercase tracking-widest text-ink/50">Optional operator login</p>
             {!authenticated ? (
               <button
                 type="button"

@@ -14,6 +14,7 @@ import { EvidenceDrawer } from "@/components/evidence/EvidenceDrawer";
 import { EvidencePanel } from "@/components/evidence/EvidencePanel";
 import { SourceBadge } from "@/components/ui/Badge";
 import { PaymentProof } from "@/components/payment/PaymentProof";
+import { EnsProof } from "./EnsProof";
 
 type Tab = "report" | "evidence" | "timeline";
 
@@ -72,6 +73,7 @@ export function ResearchReport({
           />
 
           {session.paymentReceipt && <PaymentProof receipt={session.paymentReceipt} />}
+          <EnsProof session={session} />
 
           <div className="grid md:grid-cols-2 gap-8">
             <ScoreBreakdown candidate={winner} disclaimer={session.scoreBreakdown?.disclaimer} />

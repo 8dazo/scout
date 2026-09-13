@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, use, useEffect, useState } from "react";
+import { Suspense, use } from "react";
 import { useSearchParams } from "next/navigation";
 import { ScoutShell } from "@/components/shell/ScoutShell";
 import { AgentStatus } from "@/components/shell/AgentStatus";
@@ -17,15 +17,6 @@ import { useResearchStream } from "@/lib/hooks/useResearchStream";
 
 function ResearchDetailContent({ id }: { id: string }) {
   const searchParams = useSearchParams();
-  const [judgeMode, setJudgeMode] = useState(false);
-
-  useEffect(() => {
-    setJudgeMode(
-      searchParams.get("judge") === "1" ||
-        localStorage.getItem("scout_judge_mode") === "1",
-    );
-  }, [searchParams]);
-
   const { logs, session, paymentPending, loading, error, refreshSession } = useResearchStream(id);
   const lastLog = logs[logs.length - 1];
   const initialTab = (searchParams.get("tab") as "report" | "evidence" | "timeline") ?? "report";
@@ -67,7 +58,7 @@ function ResearchDetailContent({ id }: { id: string }) {
                 <AgentStatus session={session} lastLog={lastLog} />
               </div>
               <CandidateFunnel session={session} />
-              {judgeMode && <JudgeView logs={logs} />}
+              <JudgeView logs={logs} />
             </div>
           </div>
         )}

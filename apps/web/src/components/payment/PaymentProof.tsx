@@ -12,6 +12,9 @@ export function PaymentProof({ receipt }: { receipt: PaymentReceipt }) {
         <div>
           <p className="font-display text-xs uppercase tracking-widest text-success">Verified settlement</p>
           <p className="font-mono text-2xl mt-2">${receipt.amount.toFixed(2)} {receipt.currency}</p>
+          <p className="mt-2 font-mono text-[11px] text-ink/60">
+            Agent payer — Scout Privy policy wallet. Visitor wallet is not charged.
+          </p>
         </div>
         <span className="border border-success px-2 py-1 font-mono text-xs text-success">
           {receipt.network}

@@ -53,6 +53,7 @@ export function ToolBadge({ tool }: { tool: string }) {
     openseo: "openseo",
     x402: "x402",
     ens: "ens",
+    ensv2: "ens",
     privy: "privy",
   };
   const key = tool.toLowerCase().replace(/\s+/g, "");

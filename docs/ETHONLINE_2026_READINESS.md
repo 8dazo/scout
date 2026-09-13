@@ -2,6 +2,8 @@
 
 Research date: 11 September 2026. Repository baseline: `dev` at `a7db464`. The first repository commit is dated 5 September 2026, after the event began, so Scout should enter the **Start Fresh** pools. Confirm this classification in the ETHGlobal submission form.
 
+> **Historical audit snapshot:** This document records the gaps found at commit `a7db464`. The payment, ENSv2, MCP and deployment gaps described below were subsequently addressed. Use [BOUNTY_STATUS.md](./BOUNTY_STATUS.md), [PITCH_DECK.md](./PITCH_DECK.md) and the README proof section for current submission claims.
+
 ## Decision
 
 Scout's strongest submissions are:
