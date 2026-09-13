@@ -5,6 +5,7 @@ import {
   concat,
   createPublicClient,
   createWalletClient,
+  fallback,
   encodeFunctionData,
   http,
   keccak256,
@@ -19,6 +20,19 @@ import { sepolia } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 
 const ROLE_SET_TEXT = 1n << 4n;
+const SEPOLIA_RPC_FALLBACKS = [
+  "https://ethereum-sepolia-rpc.publicnode.com",
+  "https://rpc.sepolia.org",
+];
+
+function sepoliaTransport(primary: string) {
+  return fallback(
+    [...new Set([primary, ...SEPOLIA_RPC_FALLBACKS])].map((url) =>
+      http(url, { retryCount: 1, retryDelay: 250, timeout: 15_000 }),
+    ),
+    { retryCount: 0 },
+  );
+}
 
 const resolverAbi = [
   {
@@ -78,7 +92,7 @@ export class ENSIdentityProvider implements AgentIdentity {
   private readonly publicClient;
 
   constructor(private readonly config: ENSConfig) {
-    this.publicClient = createPublicClient({ chain: sepolia, transport: http(config.rpcUrl) });
+    this.publicClient = createPublicClient({ chain: sepolia, transport: sepoliaTransport(config.rpcUrl) });
   }
 
   private async resolverAddress(): Promise<Address> {
@@ -93,7 +107,7 @@ export class ENSIdentityProvider implements AgentIdentity {
     return createWalletClient({
       account,
       chain: sepolia,
-      transport: http(this.config.rpcUrl),
+      transport: sepoliaTransport(this.config.rpcUrl),
     });
   }
 
@@ -283,7 +297,7 @@ export function createENSIdentity(_projectName?: string, _budget = 0.5): ENSIden
 
   return new ENSIdentityProvider({
     ensName: requiredEnv("ENS_AGENT_NAME"),
-    rpcUrl: process.env.ENS_SEPOLIA_RPC_URL ?? "https://sepolia.gateway.tenderly.co",
+    rpcUrl: process.env.ENS_SEPOLIA_RPC_URL ?? SEPOLIA_RPC_FALLBACKS[0],
     account,
     unauthorizedAccount,
   });
