@@ -23,6 +23,12 @@ const candidateA: Candidate = {
     txChangePct: 55,
     activeAddressesChangePct: 42,
     newUsersChangePct: 35,
+    returningUserRatio: 48,
+    priorPeriodGrowthPct: 18,
+    netFlowSharePct: 12,
+    liquidationSharePct: 2,
+    activityMomentumScore: 68,
+    borrowBalanceChangePct: 14,
   },
   seoMetrics: {
     searchDemandChangePct: 8,
@@ -30,6 +36,7 @@ const candidateA: Candidate = {
     contentGapScore: 90,
     competitorSerpDominance: 70,
     developerIntentScore: 60,
+    aiVisibilityScore: 45,
   },
 };
 
@@ -85,5 +92,19 @@ describe("scoring", () => {
     const breakdown = buildScoreBreakdown([sa, sc]);
     expect(breakdown.winner).toBeTruthy();
     expect(breakdown.modelVersion).toBe("scout-v1");
+  });
+
+  it("does not treat missing SEO and user measurements as confidence", () => {
+    const sparse: Candidate = {
+      id: "sparse",
+      protocol: "Sparse Protocol",
+      chain: "base",
+      onchainMetrics: { tvlChangePct: 12, volumeChangePct: 8 },
+    };
+    const score = scoreCandidate(sparse, 50, { ...ctx, sourceCount: 12 }, false);
+    const confidence = score.dimensions.find((d) => d.key === "evidenceConfidence");
+    const userGrowth = score.dimensions.find((d) => d.key === "userGrowth");
+    expect(confidence?.score).toBeLessThan(40);
+    expect(userGrowth?.score).toBe(0);
   });
 });

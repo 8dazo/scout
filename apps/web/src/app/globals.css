@@ -6,6 +6,7 @@
 
 :root {
   --font-display: 'Big Shoulders Display', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --ink: #0a0a0a;
   --paper: #f5f0e8;
   --paper-muted: #ebe4d8;

@@ -23,12 +23,21 @@ import { runDeepAnalysis, DEEP_ANALYSIS_PRICE_USD } from "@scout/deep-analysis";
 import { buildRecipeManifest } from "@scout/bazantic";
 import { createENSIdentity } from "@scout/ens";
 import type { DecisionLogEntry, ResearchSession } from "@scout/schemas";
-import { emitLog, getSession, listSessions, saveSession, subscribeToLogs } from "./store.js";
+import {
+  emitLog,
+  getSession,
+  getSettledSpend,
+  listSessions,
+  saveSession,
+  storageStatus,
+  subscribeToLogs,
+} from "./store.js";
 
 const app = new Hono();
 // Render injects PORT for web services; API_PORT remains the local-development fallback.
 const PORT = parseInt(process.env.PORT ?? process.env.API_PORT ?? "3001", 10);
 const requirePrivyAuth = process.env.PRIVY_REQUIRE_AUTH === "true";
+let paymentInFlight = false;
 
 async function verifyPrivyRequest(authorization?: string): Promise<string | undefined> {
   if (!requirePrivyAuth) return undefined;
@@ -70,15 +79,19 @@ mcpServer.registerTool(
       request: z.string().min(1),
       budget: z.number().positive().max(10).default(0.5),
     },
-    annotations: { readOnlyHint: true, openWorldHint: true },
+    annotations: { readOnlyHint: false, openWorldHint: true },
   },
   async ({ chain, request, budget }) => {
-    const session = await runResearch({
+    let session = await runResearch({
       request,
       budget,
       chain,
       ...researchEnvOpts(),
     });
+    if (session.status === "awaiting_payment") {
+      session = await denyPaymentAndComplete(session, {});
+    }
+    saveSession(session);
     return {
       content: [{ type: "text", text: JSON.stringify(session, null, 2) }],
       structuredContent: session as unknown as Record<string, unknown>,
@@ -150,7 +163,9 @@ app.get("/", (c) =>
   }),
 );
 
-app.get("/health", (c) => c.json({ ok: true, service: "scout-api" }));
+app.get("/health", (c) =>
+  c.json({ ok: true, service: "scout-api", storage: storageStatus() }),
+);
 
 app.get("/agent/identity", async (c) => {
   let ens;
@@ -183,6 +198,11 @@ app.get("/agent/identity", async (c) => {
 });
 
 app.post("/agent/test-eac", async (c) => {
+  try {
+    await verifyPrivyRequest(c.req.header("Authorization"));
+  } catch (error) {
+    return c.json({ error: error instanceof Error ? error.message : "Unauthorized" }, 401);
+  }
   const body = await c.req.json<{ action: "authorized" | "unauthorized" }>();
   let ens;
   try {
@@ -195,10 +215,12 @@ app.post("/agent/test-eac", async (c) => {
   }
   if (body.action === "unauthorized") {
     const res = await ens.attemptUnauthorizedWrite();
-    return c.json(res, 403);
+    if (res.verification === "blocked_onchain") return c.json(res);
+    if (res.verification === "security_failure") return c.json(res, 409);
+    return c.json(res, 502);
   }
   const res = await ens.writeResearchStatus("idle");
-  return c.json(res);
+  return res.success ? c.json(res) : c.json(res, 502);
 });
 
 app.get("/research", (c) => {
@@ -223,8 +245,9 @@ app.get("/research", (c) => {
 });
 
 app.post("/research", async (c) => {
+  let ownerUserId: string | undefined;
   try {
-    await verifyPrivyRequest(c.req.header("Authorization"));
+    ownerUserId = await verifyPrivyRequest(c.req.header("Authorization"));
   } catch (error) {
     return c.json({ error: error instanceof Error ? error.message : "Unauthorized" }, 401);
   }
@@ -239,6 +262,7 @@ app.post("/research", async (c) => {
   const researchId = crypto.randomUUID();
   const partial: ResearchSession = {
     researchId,
+    ownerUserId,
     status: "running",
     request: body.request,
     chain: body.chain ?? "base",
@@ -292,17 +316,34 @@ app.post("/research", async (c) => {
 });
 
 app.post("/research/:id/authorize-payment", async (c) => {
+  let userId: string | undefined;
   try {
-    await verifyPrivyRequest(c.req.header("Authorization"));
+    userId = await verifyPrivyRequest(c.req.header("Authorization"));
   } catch (error) {
     return c.json({ error: error instanceof Error ? error.message : "Unauthorized" }, 401);
   }
   const researchId = c.req.param("id");
   const session = getSession(researchId);
   if (!session) return c.json({ error: "Not found" }, 404);
+  if (session.ownerUserId && session.ownerUserId !== userId) {
+    return c.json({ error: "This research session belongs to another user" }, 403);
+  }
   if (session.status !== "awaiting_payment") {
     return c.json({ error: "Session is not awaiting payment" }, 400);
   }
+  if (paymentInFlight || session.paymentState === "processing") {
+    return c.json({ error: "A treasury payment is already processing" }, 409);
+  }
+
+  const treasuryCap = Number(process.env.SCOUT_TREASURY_CAP_USDC ?? "0.50");
+  const paymentAmount = session.paymentPending?.amount ?? DEEP_ANALYSIS_PRICE_USD;
+  if (!Number.isFinite(treasuryCap) || getSettledSpend() + paymentAmount > treasuryCap) {
+    return c.json({ error: "Treasury-wide spending cap would be exceeded" }, 409);
+  }
+
+  paymentInFlight = true;
+  session.paymentState = "processing";
+  saveSession(session);
 
   const { onLog, onSessionUpdate } = attachLogHandlers(researchId);
 
@@ -312,23 +353,35 @@ app.post("/research/:id/authorize-payment", async (c) => {
       onLog,
       onSessionUpdate,
     });
+    completed.paymentState = "settled";
     saveSession({ ...completed, researchId });
     return c.json(completed);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Authorization failed";
+    const failed = getSession(researchId);
+    if (failed && !failed.paymentReceipt) {
+      failed.paymentState = "failed";
+      saveSession(failed);
+    }
     return c.json({ error: message }, 500);
+  } finally {
+    paymentInFlight = false;
   }
 });
 
 app.post("/research/:id/deny-payment", async (c) => {
+  let userId: string | undefined;
   try {
-    await verifyPrivyRequest(c.req.header("Authorization"));
+    userId = await verifyPrivyRequest(c.req.header("Authorization"));
   } catch (error) {
     return c.json({ error: error instanceof Error ? error.message : "Unauthorized" }, 401);
   }
   const researchId = c.req.param("id");
   const session = getSession(researchId);
   if (!session) return c.json({ error: "Not found" }, 404);
+  if (session.ownerUserId && session.ownerUserId !== userId) {
+    return c.json({ error: "This research session belongs to another user" }, 403);
+  }
   if (session.status !== "awaiting_payment") {
     return c.json({ error: "Session is not awaiting payment" }, 400);
   }

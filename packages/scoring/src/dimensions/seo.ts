@@ -6,8 +6,11 @@ export function scoreSearchDemand(
   metrics: SeoMetrics | undefined,
   evidenceIds: string[],
 ): DimensionScore {
-  const demand = metrics?.searchDemandChangePct ?? 0;
-  const devIntent = metrics?.developerIntentScore ?? 50;
+  if (!metrics || Object.keys(metrics).length === 0) {
+    return { key: "searchDemand", weight: DIMENSION_WEIGHTS.searchDemand, score: 0, rationale: "SEO demand data unavailable", evidenceIds: [] };
+  }
+  const demand = metrics.searchDemandChangePct ?? 0;
+  const devIntent = metrics.developerIntentScore ?? 0;
   const score = toScore(demand * 0.6 + devIntent * 0.4);
   return {
     key: "searchDemand",
@@ -24,7 +27,10 @@ export function scoreCompetitiveGap(
   onchainRankScore: number,
   evidenceIds: string[],
 ): DimensionScore {
-  const serpDom = seo?.competitorSerpDominance ?? 50;
+  if (!seo || Object.keys(seo).length === 0) {
+    return { key: "competitiveGap", weight: DIMENSION_WEIGHTS.competitiveGap, score: 0, rationale: "Competitive SEO data unavailable", evidenceIds: [] };
+  }
+  const serpDom = seo.competitorSerpDominance ?? 0;
   const gap = onchainRankScore - serpDom;
   const score = toScore(50 + gap);
   const onchainUp = (onchain?.tvlChangePct ?? 0) > 20;
@@ -47,8 +53,11 @@ export function scoreSeoOpportunity(
   onchain: OnchainMetrics | undefined,
   evidenceIds: string[],
 ): DimensionScore {
-  const visibility = metrics?.organicVisibility ?? 50;
-  const gap = metrics?.contentGapScore ?? 50;
+  if (!metrics || Object.keys(metrics).length === 0) {
+    return { key: "seoOpportunity", weight: DIMENSION_WEIGHTS.seoOpportunity, score: 0, rationale: "SEO opportunity data unavailable", evidenceIds: [] };
+  }
+  const visibility = metrics.organicVisibility ?? 0;
+  const gap = metrics.contentGapScore ?? 0;
   const onchainHot = (onchain?.tvlChangePct ?? 0) > 15;
   const score = toScore((100 - visibility) * 0.4 + gap * 0.4 + (onchainHot ? 20 : 0));
   return {
@@ -64,12 +73,15 @@ export function buildGapSignal(
   onchain: OnchainMetrics | undefined,
   seo: SeoMetrics | undefined,
 ): string | undefined {
-  const onchainAvg =
-    ((onchain?.tvlChangePct ?? 0) +
-      (onchain?.volumeChangePct ?? 0) +
-      (onchain?.activeAddressesChangePct ?? 0)) /
-    3;
-  const search = seo?.searchDemandChangePct ?? 0;
+  if (typeof seo?.searchDemandChangePct !== "number") return undefined;
+  const observed = [
+    onchain?.tvlChangePct,
+    onchain?.volumeChangePct,
+    onchain?.activeAddressesChangePct,
+  ].filter((value): value is number => typeof value === "number");
+  if (observed.length === 0) return undefined;
+  const onchainAvg = observed.reduce((sum, value) => sum + value, 0) / observed.length;
+  const search = seo.searchDemandChangePct;
   const fmt = (v: number) => `${v >= 0 ? "+" : ""}${v.toFixed(1)}%`;
   if (onchainAvg > 20 && search < 15) {
     return `on-chain ${fmt(onchainAvg)} but search ${fmt(search)}`;

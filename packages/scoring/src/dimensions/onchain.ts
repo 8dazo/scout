@@ -18,19 +18,23 @@ export function scoreOnchainGrowth(
   metrics: OnchainMetrics | undefined,
   evidenceIds: string[],
 ): DimensionScore {
-  const tvl = metrics?.tvlChangePct ?? 0;
-  const vol = metrics?.volumeChangePct ?? 0;
-  const tx = metrics?.txChangePct ?? 0;
-  const score = toScore(
-    normalizePctChange(tvl) * 0.35 +
-      normalizePctChange(vol) * 0.35 +
-      normalizePctChange(tx) * 0.3,
-  );
+  const observed = [metrics?.tvlChangePct, metrics?.volumeChangePct, metrics?.txChangePct]
+    .filter((value): value is number => typeof value === "number");
+  const score = observed.length
+    ? toScore(observed.reduce((sum, value) => sum + normalizePctChange(value), 0) / observed.length)
+    : 0;
+  const details = [
+    ["TVL", metrics?.tvlChangePct],
+    ["volume", metrics?.volumeChangePct],
+    ["txs", metrics?.txChangePct],
+  ].filter((entry): entry is [string, number] => typeof entry[1] === "number");
   return {
     key: "onchainGrowth",
     weight: DIMENSION_WEIGHTS.onchainGrowth,
     score,
-    rationale: `TVL ${tvl >= 0 ? "+" : ""}${tvl.toFixed(1)}%, volume ${vol >= 0 ? "+" : ""}${vol.toFixed(1)}%, txs ${tx >= 0 ? "+" : ""}${tx.toFixed(1)}%`,
+    rationale: details.length
+      ? details.map(([label, value]) => `${label} ${value >= 0 ? "+" : ""}${value.toFixed(1)}%`).join(", ")
+      : "No measured on-chain growth fields available",
     evidenceIds,
   };
 }
@@ -39,18 +43,23 @@ export function scoreUserGrowth(
   metrics: OnchainMetrics | undefined,
   evidenceIds: string[],
 ): DimensionScore {
-  const active = metrics?.activeAddressesChangePct ?? 0;
-  const newUsers = metrics?.newUsersChangePct ?? 0;
-  let score = toScore(normalizePctChange(active) * 0.6 + normalizePctChange(newUsers) * 0.4);
-  const tx = metrics?.txChangePct ?? 0;
-  if (tx > 30 && active < 5) {
+  const observed = [metrics?.activeAddressesChangePct, metrics?.newUsersChangePct]
+    .filter((value): value is number => typeof value === "number");
+  let score = observed.length
+    ? toScore(observed.reduce((sum, value) => sum + normalizePctChange(value), 0) / observed.length)
+    : 0;
+  const tx = metrics?.txChangePct;
+  const active = metrics?.activeAddressesChangePct;
+  if (typeof tx === "number" && typeof active === "number" && tx > 30 && active < 5) {
     score = toScore(score - 20);
   }
   return {
     key: "userGrowth",
     weight: DIMENSION_WEIGHTS.userGrowth,
     score,
-    rationale: `Active addresses ${active >= 0 ? "+" : ""}${active.toFixed(1)}%, new users ${newUsers >= 0 ? "+" : ""}${newUsers.toFixed(1)}%`,
+    rationale: observed.length
+      ? `Measured user-growth fields: ${observed.map((value) => `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`).join(", ")}`
+      : "User growth was not measured by this subgraph",
     evidenceIds,
   };
 }

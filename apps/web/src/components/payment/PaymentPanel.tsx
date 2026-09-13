@@ -25,10 +25,17 @@ export function PaymentPanel({
   const [phase, setPhase] = useState<"prompt" | "settled">("prompt");
   const [activeStep, setActiveStep] = useState(0);
   const [completedSession, setCompletedSession] = useState<ResearchSession | null>(null);
-  const { getAccessToken } = useScoutAuth();
+  const { getAccessToken, authenticated, login } = useScoutAuth();
+  const [error, setError] = useState<string | null>(null);
 
   async function handleAuthorize() {
+    if (!authenticated) {
+      login();
+      setError("Sign in with Privy before authorizing the treasury payment.");
+      return;
+    }
     setLoading(true);
+    setError(null);
     setActiveStep(2);
     try {
       setActiveStep(3);
@@ -36,7 +43,8 @@ export function PaymentPanel({
       setCompletedSession(completed);
       setPhase("settled");
       setActiveStep(5);
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Payment authorization failed");
       setLoading(false);
     }
   }
@@ -104,6 +112,8 @@ export function PaymentPanel({
             </Card>
 
             <PaymentTimeline activeStep={activeStep} />
+
+            {error && <p role="alert" className="font-mono text-sm text-error">{error}</p>}
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button

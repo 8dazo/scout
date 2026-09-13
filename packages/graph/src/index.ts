@@ -271,12 +271,6 @@ export class GraphProvider implements DataProvider {
         data: {
           ...payload,
           trendingReserves,
-          markets: trendingReserves.map((row) => ({
-            id: row.symbol,
-            name: row.symbol,
-            totalValueLockedUSD: String(row.grossFlowUsd),
-            inputToken: { symbol: row.symbol },
-          })),
           windowHours: 1,
           oneHourAgo: oneHourAgoUnix(),
           sourceProtocol: dep.protocol,
@@ -355,9 +349,6 @@ export class GraphProvider implements DataProvider {
     return {
       tvlChangePct: tvlChange,
       volumeChangePct: volumeChange,
-      txChangePct: liqChange,
-      activeAddressesChangePct: volumeChange,
-      newUsersChangePct: pct1(volumeChange * 0.85),
       priorPeriodGrowthPct: tvlChange,
       returningUserRatio: uniqueUsers > 0 ? pct1(Math.min(100, uniqueUsers / 1000)) : undefined,
     };
@@ -387,12 +378,9 @@ export class GraphProvider implements DataProvider {
     const liqPct = grossFlow > 0 ? pct1(((top.liquidationUsd ?? 0) / grossFlow) * 100) : 0;
 
     return {
-      tvlChangePct: netPct,
-      volumeChangePct: momentum,
-      txChangePct: liqPct,
-      activeAddressesChangePct: momentum,
-      newUsersChangePct: pct1(momentum * 0.5),
-      priorPeriodGrowthPct: netPct,
+      netFlowSharePct: netPct,
+      liquidationSharePct: liqPct,
+      activityMomentumScore: momentum,
     };
   }
 
@@ -426,10 +414,6 @@ export class GraphProvider implements DataProvider {
 
     return {
       tvlChangePct: tvlChange,
-      volumeChangePct: tvlChange,
-      txChangePct: pct1(tvlChange * 0.6),
-      activeAddressesChangePct: pct1(tvlChange * 0.5),
-      newUsersChangePct: pct1(tvlChange * 0.4),
       priorPeriodGrowthPct: tvlChange,
     };
   }
@@ -456,11 +440,8 @@ export class GraphProvider implements DataProvider {
 
     return {
       tvlChangePct: tvlChange,
-      volumeChangePct: borrowChange,
-      txChangePct: pct1(tvlChange * 0.5),
-      activeAddressesChangePct: pct1(tvlChange * 0.4),
-      newUsersChangePct: pct1(tvlChange * 0.3),
-      priorPeriodGrowthPct: borrowChange,
+      borrowBalanceChangePct: borrowChange,
+      priorPeriodGrowthPct: tvlChange,
     };
   }
 }

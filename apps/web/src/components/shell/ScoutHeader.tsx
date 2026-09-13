@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ResearchSession } from "@scout/schemas";
 import type { DecisionLogEntry } from "@scout/schemas";
 import { AgentStatus } from "./AgentStatus";
+import { useScoutAuth } from "@/app/providers";
 
 const NAV = [
   { href: "/", label: "Research" },
@@ -21,6 +22,7 @@ export function ScoutHeader({
   lastLog?: DecisionLogEntry;
 }) {
   const pathname = usePathname();
+  const { ready, authenticated, login, logout } = useScoutAuth();
 
   return (
     <header className="border-b-[3px] border-ink bg-paper sticky top-0 z-30">
@@ -51,6 +53,15 @@ export function ScoutHeader({
         </div>
 
         <div className="flex items-center gap-3">
+          {ready && (
+            <button
+              type="button"
+              onClick={() => authenticated ? void logout() : login()}
+              className="border-2 border-ink px-3 py-1.5 font-display text-xs uppercase hover:bg-ink hover:text-paper"
+            >
+              {authenticated ? "Sign out" : "Sign in"}
+            </button>
+          )}
           <div className="hidden sm:block">
             <AgentStatus session={session ?? null} lastLog={lastLog} compact />
           </div>

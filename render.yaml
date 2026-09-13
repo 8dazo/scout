@@ -36,7 +36,9 @@ services:
       - key: ENS_AGENT_NAME
         value: scout-agent.eth
       - key: PRIVY_REQUIRE_AUTH
-        value: "false"
+        value: "true"
+      - key: SCOUT_TREASURY_CAP_USDC
+        value: "0.50"
       - key: OPENROUTER_API_KEY
         sync: false
       - key: GRAPH_GATEWAY_API_KEY

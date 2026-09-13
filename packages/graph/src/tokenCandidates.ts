@@ -64,9 +64,6 @@ function metricsFromMessariMarket(
   return {
     tvlChangePct: tvlChange,
     volumeChangePct: volumeChange,
-    txChangePct: pct1(volumeChange * 0.5),
-    activeAddressesChangePct: volumeChange,
-    newUsersChangePct: pct1(volumeChange * 0.85),
     priorPeriodGrowthPct: tvlChange,
   };
 }
@@ -114,8 +111,7 @@ export function extractMessariTokenCandidates(
       windowLabel: "7d",
       tokenMetrics: {
         tvlUsd,
-        grossFlowUsd: activityUsd > 0 ? activityUsd : tvlUsd,
-        txCount: marketSnaps.length,
+        suppliedBorrowedUsd: activityUsd,
       },
       onchainMetrics: metricsFromMessariMarket(market, marketSnaps),
       provenance: {
@@ -154,15 +150,12 @@ export function extractAaveTrendingTokenCandidates(
         grossFlowUsd: row.grossFlowUsd,
         netInflowUsd: row.netInflowUsd,
         txCount: row.txCount,
-        tvlUsd: row.grossFlowUsd,
       },
       onchainMetrics: {
-        tvlChangePct: netPct,
-        volumeChangePct: row.trendingScore > 0 ? pct1(Math.min(100, row.trendingScore / 10000)) : 0,
-        txChangePct: liqPct,
-        activeAddressesChangePct: pct1(row.txCount),
-        newUsersChangePct: pct1(row.txCount * 0.5),
-        priorPeriodGrowthPct: netPct,
+        netFlowSharePct: netPct,
+        liquidationSharePct: liqPct,
+        activityMomentumScore:
+          row.trendingScore > 0 ? pct1(Math.min(100, row.trendingScore / 10000)) : 0,
       },
       provenance: {
         subgraphId: dep.subgraphId,

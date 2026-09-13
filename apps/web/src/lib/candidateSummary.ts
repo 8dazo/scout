@@ -8,12 +8,14 @@ export function formatSignedPct(value: number | undefined | null): string {
 
 export function onchainAverage(metrics?: OnchainMetrics): number {
   if (!metrics) return 0;
-  return (
-    ((metrics.tvlChangePct ?? 0) +
-      (metrics.volumeChangePct ?? 0) +
-      (metrics.activeAddressesChangePct ?? 0)) /
-    3
-  );
+  const observed = [
+    metrics.tvlChangePct,
+    metrics.volumeChangePct,
+    metrics.activeAddressesChangePct,
+  ].filter((value): value is number => typeof value === "number");
+  return observed.length
+    ? observed.reduce((sum, value) => sum + value, 0) / observed.length
+    : 0;
 }
 
 export function matchRawCandidate(
@@ -49,7 +51,7 @@ export function candidateDisplaySubtitle(score: CandidateScore): string {
 
 export function candidateInsight(score: CandidateScore, raw?: Candidate): string {
   const onchain = onchainAverage(raw?.onchainMetrics);
-  const search = raw?.seoMetrics?.searchDemandChangePct ?? 0;
+  const search = raw?.seoMetrics?.searchDemandChangePct;
 
   if (score.gapSignal) {
     return score.gapSignal
@@ -57,7 +59,7 @@ export function candidateInsight(score: CandidateScore, raw?: Candidate): string
       .replace(/but search \+(-)/, "but search $1");
   }
 
-  if (onchain > 20 && search < 15) {
+  if (onchain > 20 && typeof search === "number" && search < 15) {
     return `on-chain ${formatSignedPct(onchain)} but search ${formatSignedPct(search)}`;
   }
 

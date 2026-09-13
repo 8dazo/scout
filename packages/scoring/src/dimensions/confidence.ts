@@ -8,17 +8,24 @@ export function scoreEvidenceConfidence(
   hasPaidAnalysis: boolean,
   evidenceIds: string[],
 ): DimensionScore {
-  let score = 40 + sourceCount * 10;
-  if (candidate.onchainMetrics) score += 15;
-  if (candidate.seoMetrics) score += 15;
+  const onchainObserved = candidate.onchainMetrics
+    ? Object.values(candidate.onchainMetrics).filter((value) => typeof value === "number").length
+    : 0;
+  const seoObserved = candidate.seoMetrics
+    ? Object.values(candidate.seoMetrics).filter((value) => typeof value === "number").length
+    : 0;
+  const onchainCoverage = Math.min(1, onchainObserved / 11);
+  const seoCoverage = Math.min(1, seoObserved / 6);
+  let score = 20 + onchainCoverage * 45 + seoCoverage * 25;
   if (hasPaidAnalysis) {
     score += (candidate.deepAnalysis?.confidenceBoost ?? 0.1) * 100;
   }
   const onchain = candidate.onchainMetrics;
   if (
-    onchain &&
-    (onchain.txChangePct ?? 0) > 30 &&
-    (onchain.activeAddressesChangePct ?? 0) < 5
+    typeof onchain?.txChangePct === "number" &&
+    typeof onchain.activeAddressesChangePct === "number" &&
+    onchain.txChangePct > 30 &&
+    onchain.activeAddressesChangePct < 5
   ) {
     score -= 15;
   }
@@ -26,7 +33,7 @@ export function scoreEvidenceConfidence(
     key: "evidenceConfidence",
     weight: DIMENSION_WEIGHTS.evidenceConfidence,
     score: toScore(score),
-    rationale: `${sourceCount} sources, ${hasPaidAnalysis ? "paid deep analysis included" : "free evidence only"}`,
+    rationale: `${onchainObserved}/11 on-chain and ${seoObserved}/6 SEO fields observed across ${sourceCount} recorded sources${hasPaidAnalysis ? ", paid diagnostics included" : ""}`,
     evidenceIds,
   };
 }
@@ -34,11 +41,14 @@ export function scoreEvidenceConfidence(
 export function computeMomentum(
   metrics: Candidate["onchainMetrics"],
 ): "heating" | "stable" | "cooling" {
-  const current =
-    ((metrics?.tvlChangePct ?? 0) +
-      (metrics?.volumeChangePct ?? 0) +
-      (metrics?.activeAddressesChangePct ?? 0)) /
-    3;
+  const observed = [
+    metrics?.tvlChangePct,
+    metrics?.volumeChangePct,
+    metrics?.activeAddressesChangePct,
+  ].filter((value): value is number => typeof value === "number");
+  const current = observed.length
+    ? observed.reduce((sum, value) => sum + value, 0) / observed.length
+    : 0;
   const prior = metrics?.priorPeriodGrowthPct ?? current;
   if (current > prior + 5) return "heating";
   if (current < prior - 5) return "cooling";
@@ -53,9 +63,10 @@ export function computeRiskScore(candidate: Candidate): number {
   if (deep?.retention && deep.retention < 20) risk += 20;
   const onchain = candidate.onchainMetrics;
   if (
-    onchain &&
-    (onchain.txChangePct ?? 0) > 30 &&
-    (onchain.activeAddressesChangePct ?? 0) < 5
+    typeof onchain?.txChangePct === "number" &&
+    typeof onchain.activeAddressesChangePct === "number" &&
+    onchain.txChangePct > 30 &&
+    onchain.activeAddressesChangePct < 5
   ) {
     risk += 25;
   }
@@ -67,12 +78,20 @@ export function computeFlags(candidate: Candidate): string[] {
   const onchain = candidate.onchainMetrics;
   const seo = candidate.seoMetrics;
   if (onchain && seo) {
-    const onchainAvg =
-      ((onchain.tvlChangePct ?? 0) + (onchain.activeAddressesChangePct ?? 0)) / 2;
+    const adoption = [onchain.tvlChangePct, onchain.activeAddressesChangePct]
+      .filter((value): value is number => typeof value === "number");
+    const onchainAvg = adoption.length
+      ? adoption.reduce((sum, value) => sum + value, 0) / adoption.length
+      : 0;
     if (onchainAvg > 20 && (seo.searchDemandChangePct ?? 0) < 10) {
       flags.push("onchain_web_divergence");
     }
-    if ((onchain.txChangePct ?? 0) > 30 && (onchain.activeAddressesChangePct ?? 0) < 5) {
+    if (
+      typeof onchain.txChangePct === "number" &&
+      typeof onchain.activeAddressesChangePct === "number" &&
+      onchain.txChangePct > 30 &&
+      onchain.activeAddressesChangePct < 5
+    ) {
       flags.push("sybil_suspect");
     }
     if ((onchain.tvlChangePct ?? 0) > 30 && (deepRetention(candidate) < 20)) {

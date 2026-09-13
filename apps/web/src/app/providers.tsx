@@ -6,11 +6,19 @@ import { PrivyProvider, usePrivy } from "@privy-io/react-auth";
 const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 const ScoutAuthContext = createContext({
   getAccessToken: async (): Promise<string | null> => null,
+  ready: true,
+  authenticated: false,
+  login: () => {},
+  logout: async () => {},
 });
 
 function PrivyAuthBridge({ children }: { children: React.ReactNode }) {
-  const { getAccessToken } = usePrivy();
-  return <ScoutAuthContext.Provider value={{ getAccessToken }}>{children}</ScoutAuthContext.Provider>;
+  const { getAccessToken, ready, authenticated, login, logout } = usePrivy();
+  return (
+    <ScoutAuthContext.Provider value={{ getAccessToken, ready, authenticated, login, logout }}>
+      {children}
+    </ScoutAuthContext.Provider>
+  );
 }
 
 export function useScoutAuth() {
@@ -19,7 +27,7 @@ export function useScoutAuth() {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   if (!appId) {
-    return <ScoutAuthContext.Provider value={{ getAccessToken: async () => null }}>{children}</ScoutAuthContext.Provider>;
+    return children;
   }
   return (
     <PrivyProvider

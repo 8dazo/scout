@@ -7,7 +7,7 @@ import type {
   Source,
 } from "@scout/schemas";
 import { GraphProvider } from "@scout/graph";
-import { OpenSEOProvider, neutralSeoMetrics } from "@scout/openseo";
+import { OpenSEOProvider } from "@scout/openseo";
 import {
   buildScoreBreakdown,
   evaluateUncertaintyGate,
@@ -77,10 +77,17 @@ function scoringContextFor(
   candidate: ResearchSession["candidates"][number],
   extras?: Partial<ScoringContext>,
 ): ScoringContext {
+  const candidateSources = session.sources.filter((source) => {
+    const data = source.data as { live?: boolean; tokenCandidates?: Array<{ id?: string }>; protocol?: string } | undefined;
+    if (data?.live === false) return false;
+    if (source.id === `openseo-${candidate.id}`) return true;
+    if (data?.tokenCandidates?.some((row) => row.id === candidate.id)) return true;
+    return source.type === "paid" && data?.protocol === candidate.protocol;
+  });
   return {
     graphEvidenceId: candidate.id,
     seoEvidenceId: `openseo-${candidate.protocol.toLowerCase().replace(/\s+/g, "-")}-${candidate.chain}`,
-    sourceCount: session.sources.length,
+    sourceCount: candidateSources.length,
     ...extras,
   };
 }
@@ -242,7 +249,7 @@ export async function runResearch(opts: RunResearchOptions): Promise<ResearchSes
         "openseo.complete",
         { sparse: sparseSeo, unavailable: true, error: message },
       );
-      session.candidates = candidates.map((c) => ({ ...c, seoMetrics: neutralSeoMetrics() }));
+      session.candidates = candidates.map((c) => ({ ...c, seoMetrics: undefined }));
       candidates = session.candidates;
     }
     touchSession(session, runtime);
@@ -251,6 +258,8 @@ export async function runResearch(opts: RunResearchOptions): Promise<ResearchSes
       const tm = c.tokenMetrics;
       if (tm?.trendingScore && tm.trendingScore > 0) return tm.trendingScore;
       if (tm?.grossFlowUsd && tm.grossFlowUsd > 0) return tm.grossFlowUsd;
+      if (tm?.tvlUsd && tm.tvlUsd > 0) return tm.tvlUsd;
+      if (tm?.suppliedBorrowedUsd && tm.suppliedBorrowedUsd > 0) return tm.suppliedBorrowedUsd;
       const m = c.onchainMetrics;
       return ((m?.tvlChangePct ?? 0) + (m?.activeAddressesChangePct ?? 0)) / 2;
     });
@@ -511,6 +520,8 @@ export async function authorizePaymentAndComplete(
     const tm = c.tokenMetrics;
     if (tm?.trendingScore && tm.trendingScore > 0) return tm.trendingScore;
     if (tm?.grossFlowUsd && tm.grossFlowUsd > 0) return tm.grossFlowUsd;
+    if (tm?.tvlUsd && tm.tvlUsd > 0) return tm.tvlUsd;
+    if (tm?.suppliedBorrowedUsd && tm.suppliedBorrowedUsd > 0) return tm.suppliedBorrowedUsd;
     const m = c.onchainMetrics;
     return ((m?.tvlChangePct ?? 0) + (m?.activeAddressesChangePct ?? 0)) / 2;
   });
@@ -522,7 +533,7 @@ export async function authorizePaymentAndComplete(
       (onchainRanks[i] / maxRank) * 100,
       scoringContextFor(session, c, {
         paidEvidenceId: paidSourceId,
-        sourceCount: session.sources.length,
+        sourceCount: scoringContextFor(session, c).sourceCount,
       }),
       c.protocol === targetProtocol,
     ),
@@ -545,6 +556,8 @@ export async function denyPaymentAndComplete(
     const tm = c.tokenMetrics;
     if (tm?.trendingScore && tm.trendingScore > 0) return tm.trendingScore;
     if (tm?.grossFlowUsd && tm.grossFlowUsd > 0) return tm.grossFlowUsd;
+    if (tm?.tvlUsd && tm.tvlUsd > 0) return tm.tvlUsd;
+    if (tm?.suppliedBorrowedUsd && tm.suppliedBorrowedUsd > 0) return tm.suppliedBorrowedUsd;
     const m = c.onchainMetrics;
     return ((m?.tvlChangePct ?? 0) + (m?.activeAddressesChangePct ?? 0)) / 2;
   });

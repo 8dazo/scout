@@ -191,9 +191,18 @@ export class ENSIdentityProvider implements AgentIdentity {
     }
   }
 
-  async attemptUnauthorizedWrite(): Promise<{ success: boolean; error?: string }> {
+  async attemptUnauthorizedWrite(): Promise<{
+    success: boolean;
+    verification: "blocked_onchain" | "security_failure" | "indeterminate";
+    txHash?: string;
+    error?: string;
+  }> {
     if (!this.config.unauthorizedAccount) {
-      return { success: false, error: "An ENS unauthorized test wallet is required for a real denial test" };
+      return {
+        success: false,
+        verification: "indeterminate",
+        error: "An ENS unauthorized test wallet is required for a real denial test",
+      };
     }
     try {
       const resolver = await this.resolverAddress();
@@ -206,12 +215,23 @@ export class ENSIdentityProvider implements AgentIdentity {
       });
       const receipt = await this.publicClient.waitForTransactionReceipt({ hash: txHash });
       return receipt.status === "reverted"
-        ? { success: false, error: `Unauthorized ENSv2 write reverted on-chain (${txHash})` }
-        : { success: true, error: `SECURITY FAILURE: unauthorized write succeeded (${txHash})` };
+        ? {
+            success: false,
+            verification: "blocked_onchain",
+            txHash,
+            error: "Unauthorized ENSv2 text-record write reverted on-chain",
+          }
+        : {
+            success: true,
+            verification: "security_failure",
+            txHash,
+            error: "SECURITY FAILURE: unauthorized text-record write succeeded",
+          };
     } catch (error) {
       return {
         success: false,
-        error: `Unauthorized ENSv2 write rejected: ${error instanceof Error ? error.message : "reverted"}`,
+        verification: "indeterminate",
+        error: `Could not obtain a mined ENSv2 receipt: ${error instanceof Error ? error.message : "request failed"}`,
       };
     }
   }

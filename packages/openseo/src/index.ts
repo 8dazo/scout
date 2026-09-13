@@ -86,7 +86,7 @@ export class OpenSEOProvider implements DataProvider {
             metrics: neutralSeoMetrics(),
           },
         });
-        enriched.push({ ...c, seoMetrics: neutralSeoMetrics() });
+        enriched.push({ ...c, seoMetrics: undefined });
       }
       return { candidates: enriched, sources, sparse, unavailable: true };
     }
@@ -137,7 +137,7 @@ export class OpenSEOProvider implements DataProvider {
             metrics: seo,
           },
         });
-        enriched.push({ ...c, seoMetrics: seo });
+        enriched.push({ ...c, seoMetrics: hasKeywordData ? seo : undefined });
       } catch (err) {
         const message = err instanceof Error ? err.message : "unknown error";
         sparse.push(c.protocol);
@@ -155,7 +155,7 @@ export class OpenSEOProvider implements DataProvider {
             metrics: neutralSeoMetrics(),
           },
         });
-        enriched.push({ ...c, seoMetrics: neutralSeoMetrics() });
+        enriched.push({ ...c, seoMetrics: undefined });
       }
     }
 

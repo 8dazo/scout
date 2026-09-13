@@ -54,7 +54,10 @@ export async function authorizePayment(id: string, accessToken?: string | null):
     method: "POST",
     headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
   });
-  if (!res.ok) throw new Error("Payment authorization failed");
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as { error?: string };
+    throw new Error(body.error ?? "Payment authorization failed");
+  }
   return res.json();
 }
 

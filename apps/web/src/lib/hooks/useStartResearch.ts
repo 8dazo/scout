@@ -7,7 +7,7 @@ import { useScoutAuth } from "@/app/providers";
 
 export function useStartResearch() {
   const router = useRouter();
-  const { getAccessToken } = useScoutAuth();
+  const { getAccessToken, authenticated, login } = useScoutAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,6 +18,12 @@ export function useStartResearch() {
   }) {
     setLoading(true);
     setError(null);
+    if (!authenticated) {
+      login();
+      setError("Sign in with Privy, then start the mission again.");
+      setLoading(false);
+      return;
+    }
     try {
       const { researchId } = await startResearch(params, await getAccessToken());
       router.push(`/research/${researchId}`);

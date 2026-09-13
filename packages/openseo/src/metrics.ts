@@ -68,14 +68,8 @@ function protocolTokens(protocol: string): string[] {
 }
 
 export function neutralSeoMetrics(): SeoMetrics {
-  return {
-    searchDemandChangePct: 0,
-    organicVisibility: 0,
-    contentGapScore: 20,
-    competitorSerpDominance: 50,
-    developerIntentScore: 20,
-    aiVisibilityScore: 0,
-  };
+  // Absence of provider data is unknown evidence, not a numeric baseline.
+  return {};
 }
 
 function rowMatchesProtocol(row: KeywordRow, protocol: string): boolean {

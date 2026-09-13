@@ -100,7 +100,7 @@ Both Render services deploy from the public `dev` branch. The versioned [`render
 
 ### Public end-to-end deployed testnet run
 
-The [preserved verified report](https://scout-web-ethglobal-2026-y6tp.onrender.com//research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183) queried all five configured Base lending deployments. Three returned token-level data in that run: two Messari-composable protocols plus the separately labeled native Aave adapter. Scout ranked 11 assets, disclosed two skipped sources and sparse OpenSEO data, triggered the uncertainty gate at a 3.3-point top-two gap, and bought candidate-specific diagnostics through the deployed x402 endpoint. The Privy policy-approved payment settled [on Base Sepolia](https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8) for 0.03 USDC. The report selected sFRAX on Compound V3 with a 51.4 opportunity score, 30 risk score, 100% evidence confidence and 15 evidence sources.
+The [preserved verified report](https://scout-web-ethglobal-2026-y6tp.onrender.com/research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183) queried all five configured Base lending deployments. Three returned token-level data in that run: two Messari-composable protocols plus the separately labeled native Aave adapter. Scout ranked 11 assets, disclosed two skipped sources and sparse OpenSEO data, triggered the uncertainty gate at a 3.3-point top-two gap, and bought candidate-specific diagnostics through the deployed x402 endpoint. The Privy policy-approved payment settled [on Base Sepolia](https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8) for 0.03 USDC. The report selected sFRAX on Compound V3 with a 51.4 opportunity score and 30 risk score. Its displayed 100% confidence is retained as historical output from the earlier source-count model; current runs compute confidence from observed candidate fields and do not score missing OpenSEO data as neutral evidence.
 
 A compact copy of that real API response is versioned with the API so the proof route survives Render's ephemeral filesystem. It is a historical evidence snapshot, not a claim that its market data remains live after 13 September 2026.
 
@@ -237,7 +237,7 @@ node apps/agent/dist/index.js "Analyze lending protocols on Base. Best developer
 | **The Graph** | Live onchain protocol discovery & Messari standardized lending/CDP subgraphs (*"1 query × N protocols"*); each protocol query fetches **top 5 markets** (`inputToken`, TVL, 7d snapshots) and flattens into a **cross-protocol token leaderboard** (Aave uses native 1h trending) | [`packages/graph`](packages/graph) |
 | **OpenSEO** | Internet/search intelligence, keyword search volume, SERP rankings, and competitor gap metrics | [`packages/openseo`](packages/openseo) |
 | **x402** | Machine-native HTTP 402 payment flow for deep analysis reports ($0.03 USDC on Base Sepolia) | [`packages/x402`](packages/x402) |
-| **ENSv2** | Onchain agent identity (scout-agent.eth), Permissioned Resolver, record-scoped Enhanced Access Control, and onchain treasury cap | [`packages/ens`](packages/ens) |
+| **ENSv2** | Onchain agent identity (scout-agent.eth), Permissioned Resolver, record-scoped Enhanced Access Control, and an onchain budget value enforced against aggregate recorded settlements | [`packages/ens`](packages/ens) |
 | **Privy** | Organization treasury embedded wallet, spending policies (per-tx caps, domain allowlists) | [`packages/privy`](packages/privy) |
 
 ---
@@ -246,12 +246,14 @@ node apps/agent/dist/index.js "Analyze lending protocols on Base. Best developer
 
 Scout's implemented `scout-v1` model scores candidates across **6 evidence dimensions** (0–100 scale):
 
-1. **Onchain Growth (30%)**: TVL, volume and transaction change.
-2. **User Growth (20%)**: Active-address and new-user change, with a concentration penalty when transaction growth materially outpaces users.
+1. **Onchain Growth (30%)**: Available measured TVL, volume and transaction change; missing fields are excluded.
+2. **User Growth (20%)**: Measured active-address and new-user change. It scores zero when the selected subgraph does not expose those measurements.
 3. **Search Demand (20%)**: Search-volume and developer-intent signals.
 4. **Competitive Gap (15%)**: The difference between observed onchain rank and web visibility.
 5. **SEO Opportunity (10%)**: Content-gap and organic-visibility signals.
-6. **Evidence Confidence (5%)**: Coverage and quality of the evidence available to the candidate.
+6. **Evidence Confidence (5%)**: Coverage of observed onchain and SEO fields for that candidate. Sparse or failed providers add no confidence.
+
+Dynamic sessions use atomic JSON writes. Set `SCOUT_DATA_DIR` to a persistent mounted path in production; `/health` reports whether persistent storage is configured. The versioned historical proof remains available across deploys independently of dynamic session storage.
 
 Risk is reported separately from the opportunity composite. The model is deterministic and evidence-linked; it is a research heuristic, not a mathematically objective prediction.
 

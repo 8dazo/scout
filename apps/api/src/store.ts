@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import {
   ResearchSessionSchema,
@@ -7,7 +7,7 @@ import {
 } from "@scout/schemas";
 import verifiedSessionData from "./verified-session.json" with { type: "json" };
 
-const DATA_DIR = join(process.cwd(), ".scout-data");
+const DATA_DIR = process.env.SCOUT_DATA_DIR ?? join(process.cwd(), ".scout-data");
 const SESSIONS_FILE = join(DATA_DIR, "sessions.json");
 
 type SessionStore = Record<string, ResearchSession>;
@@ -32,7 +32,23 @@ function loadStore(): SessionStore {
 
 function saveStore(store: SessionStore): void {
   if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
-  writeFileSync(SESSIONS_FILE, JSON.stringify(store, null, 2), "utf8");
+  const temporaryFile = `${SESSIONS_FILE}.${process.pid}.tmp`;
+  writeFileSync(temporaryFile, JSON.stringify(store, null, 2), "utf8");
+  renameSync(temporaryFile, SESSIONS_FILE);
+}
+
+export function getSettledSpend(): number {
+  return Object.values(loadStore()).reduce(
+    (total, session) => total + (session.paymentReceipt?.amount ?? 0),
+    0,
+  );
+}
+
+export function storageStatus() {
+  return {
+    directory: DATA_DIR,
+    persistent: Boolean(process.env.SCOUT_DATA_DIR),
+  };
 }
 
 export function saveSession(session: ResearchSession): void {

@@ -59,6 +59,10 @@ export const OnchainMetricsSchema = z.object({
   newUsersChangePct: z.number().optional(),
   returningUserRatio: z.number().optional(),
   priorPeriodGrowthPct: z.number().optional(),
+  netFlowSharePct: z.number().optional(),
+  liquidationSharePct: z.number().optional(),
+  activityMomentumScore: z.number().optional(),
+  borrowBalanceChangePct: z.number().optional(),
 });
 
 export type OnchainMetrics = z.infer<typeof OnchainMetricsSchema>;
@@ -80,6 +84,7 @@ export const TokenMetricsSchema = z.object({
   netInflowUsd: z.number().optional(),
   tvlUsd: z.number().optional(),
   txCount: z.number().optional(),
+  suppliedBorrowedUsd: z.number().optional(),
 });
 
 export type TokenMetrics = z.infer<typeof TokenMetricsSchema>;
@@ -238,6 +243,8 @@ export const ResearchSessionSchema = z.object({
   confidence: z.number().optional(),
   paymentPending: PaymentPendingSchema.optional(),
   paymentReceipt: PaymentReceiptSchema.optional(),
+  ownerUserId: z.string().optional(),
+  paymentState: z.enum(["idle", "processing", "settled", "failed"]).optional(),
   decisionLog: z.array(DecisionLogEntrySchema),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -262,7 +269,12 @@ export interface AgentIdentity {
   getPermissions(): Promise<Record<string, boolean>>;
   getBudgetCap(): Promise<number | null>;
   writeResearchStatus(status: string, reportHash?: string): Promise<{ success: boolean; txHash?: string; error?: string }>;
-  attemptUnauthorizedWrite(): Promise<{ success: boolean; error?: string }>;
+  attemptUnauthorizedWrite(): Promise<{
+    success: boolean;
+    verification: "blocked_onchain" | "security_failure" | "indeterminate";
+    txHash?: string;
+    error?: string;
+  }>;
 }
 
 export interface PaymentProvider {

@@ -5,9 +5,9 @@ export interface DeepAnalysisResult {
   wallet_growth?: number;
   retention?: number;
   whale_activity?: number;
-  growth_quality: "strong" | "moderate" | "weak";
+  growth_quality: "strong" | "moderate" | "weak" | "insufficient_data";
   risk_factors: string[];
-  competitive_pressure: "low" | "medium" | "high";
+  competitive_pressure: "low" | "medium" | "high" | "insufficient_data";
   developer_opportunity: string;
   confidence_boost: number;
   observed_fields: string[];
@@ -29,19 +29,27 @@ export function runDeepAnalysis(protocol: string, candidate: Candidate): DeepAna
   if (retention !== undefined && retention < 25) {
     riskFactors.push("Low returning-user ratio relative to the observed activity window");
   }
-  if ((onchain?.txChangePct ?? 0) > 40 && (onchain?.activeAddressesChangePct ?? 0) < 10) {
+  if (
+    typeof onchain.txChangePct === "number" &&
+    typeof onchain.activeAddressesChangePct === "number" &&
+    onchain.txChangePct > 40 &&
+    onchain.activeAddressesChangePct < 10
+  ) {
     riskFactors.push("Transaction growth materially exceeds active-address growth");
   }
   if ((onchain.tvlChangePct ?? 0) > 25 && (onchain.volumeChangePct ?? 0) < 0) {
     riskFactors.push("TVL growth is not accompanied by volume growth");
   }
 
-  const growthQuality =
-    retention !== undefined && retention > 28 && (walletGrowth ?? 0) > 0
+  const growthQuality = retention === undefined && walletGrowth === undefined
+    ? "insufficient_data"
+    : retention !== undefined && retention > 28 && (walletGrowth ?? 0) > 0
       ? "strong"
       : retention !== undefined && retention > 20
         ? "moderate"
-        : "weak";
+        : retention !== undefined
+          ? "weak"
+          : "insufficient_data";
   const confidenceBoost = Math.min(0.15, observedFields.length * 0.02);
 
   return {
@@ -50,7 +58,12 @@ export function runDeepAnalysis(protocol: string, candidate: Candidate): DeepAna
     retention,
     growth_quality: growthQuality,
     risk_factors: riskFactors,
-    competitive_pressure: (candidate?.seoMetrics?.competitorSerpDominance ?? 50) > 70 ? "high" : "medium",
+    competitive_pressure:
+      candidate.seoMetrics?.competitorSerpDominance === undefined
+        ? "insufficient_data"
+        : candidate.seoMetrics.competitorSerpDominance > 70
+          ? "high"
+          : "medium",
     developer_opportunity: `Validate integration demand around ${protocol} against its observed on-chain and search evidence`,
     confidence_boost: confidenceBoost,
     observed_fields: observedFields,

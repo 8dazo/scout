@@ -3,26 +3,33 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { useScoutAuth } from "@/app/providers";
 
 interface EACTestResult {
   action: "authorized" | "unauthorized";
   success: boolean;
   status: number;
   data: Record<string, unknown>;
+  verification?: "blocked_onchain" | "security_failure" | "indeterminate";
   timestamp: string;
 }
 
 export function EACTestCard() {
   const [loading, setLoading] = useState<"auth" | "unauth" | null>(null);
   const [result, setResult] = useState<EACTestResult | null>(null);
+  const { getAccessToken } = useScoutAuth();
 
   async function handleTest(action: "authorized" | "unauthorized") {
     setLoading(action === "authorized" ? "auth" : "unauth");
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+      const accessToken = await getAccessToken();
       const res = await fetch(`${apiUrl}/agent/test-eac`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify({ action }),
       });
       const data = await res.json();
@@ -31,6 +38,7 @@ export function EACTestCard() {
         success: res.ok,
         status: res.status,
         data,
+        verification: data.verification,
         timestamp: new Date().toLocaleTimeString(),
       });
     } catch (err) {
@@ -79,7 +87,7 @@ export function EACTestCard() {
           loading={loading === "unauth"}
           onClick={() => handleTest("unauthorized")}
         >
-          Test Unauthorized Action (Transfer / Upgrade)
+          Test Unauthorized Text Record Write
         </Button>
       </div>
 
@@ -87,21 +95,33 @@ export function EACTestCard() {
         <div className="border-brutal p-4 bg-paper-muted font-mono text-xs space-y-3">
           <div className="flex items-center justify-between border-b border-ink/20 pb-2">
             <span className="font-bold uppercase">
-              Action: {result.action === "authorized" ? "Update research.status" : "Transfer / Change Resolver"}
+              Action: {result.action === "authorized" ? "Update research.status" : "Write research.status without permission"}
             </span>
             <span
               className={`px-2 py-0.5 font-bold uppercase ${
-                result.success ? "bg-success text-paper" : "bg-error text-paper"
+                (result.action === "authorized" && result.success) || result.verification === "blocked_onchain"
+                  ? "bg-success text-paper"
+                  : "bg-error text-paper"
               }`}
             >
-              {result.success ? `HTTP ${result.status} ALLOWED` : `HTTP ${result.status} BLOCKED`}
+              {result.action === "authorized" && result.success
+                ? `HTTP ${result.status} ALLOWED`
+                : result.verification === "blocked_onchain"
+                  ? "MINED REVERT — BLOCKED"
+                  : result.verification === "security_failure"
+                    ? "SECURITY FAILURE"
+                    : "NOT VERIFIED"}
             </span>
           </div>
 
           <p className="text-ink/80">
-            {result.success
-              ? "Operation succeeded under ROLE_TEXT delegation. ENS record verified."
-              : "Access denied by Permissioned Resolver: Account lacks permission for this namespace key."}
+            {result.action === "authorized" && result.success
+              ? "Operation succeeded under the delegated text-record role."
+              : result.verification === "blocked_onchain"
+                ? "The unauthorized transaction was mined and reverted on-chain."
+                : result.verification === "security_failure"
+                  ? "The unauthorized transaction succeeded. Review resolver permissions immediately."
+                  : "No mined receipt was obtained, so the access-control result is not verified."}
           </p>
 
           <pre className="bg-paper p-3 border border-ink/20 overflow-x-auto text-[11px]">
