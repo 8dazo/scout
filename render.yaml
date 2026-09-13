@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     region: oregon
-    branch: dev
+    branch: main
     autoDeploy: true
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start -w @scout/api
@@ -66,7 +66,7 @@ services:
     runtime: node
     plan: free
     region: oregon
-    branch: dev
+    branch: main
     autoDeploy: true
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start -w @scout/web -- --hostname 0.0.0.0 --port $PORT
