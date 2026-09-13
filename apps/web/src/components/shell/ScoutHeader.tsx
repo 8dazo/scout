@@ -28,7 +28,10 @@ export function ScoutHeader({
     <header className="border-b-[3px] border-ink bg-paper sticky top-0 z-30">
       <div className="max-w-scout mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-8">
-          <Link href="/" className="font-display text-xl tracking-widest uppercase shrink-0 hover:text-signal transition-colors">
+          <Link
+            href="/"
+            className="font-display font-black text-2xl tracking-widest uppercase shrink-0 hover:text-signal transition-colors"
+          >
             Scout
           </Link>
 

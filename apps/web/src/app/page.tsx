@@ -39,7 +39,6 @@ export default function HomePage() {
                 Scout <span className="text-signal">Find?</span>
               </span>
             </h1>
-            <p className="mt-8 text-lg text-ink/70">Ask a research question.</p>
             <div className="mt-8">
               <ResearchComposer initialPrompt={selectedPrompt} />
             </div>
