@@ -4,7 +4,7 @@ Present one slide at a time. Speaker notes are spoken English, not a restatement
 
 **One-liner:** Scout is a protocol research agent that ranks live Base lending from The Graph, requests a policy-controlled evidence purchase when uncertain, and writes the result to `scout-agent.eth`.
 
-**Live app:** [scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026.onrender.com)
+**Live app:** [scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026-y6tp.onrender.com/)
 
 ---
 
@@ -18,7 +18,7 @@ ETHOnline 2026 · Start Fresh
 
 Ranks live Base lending from The Graph. Pays for extra evidence after authorization. Writes the result to `scout-agent.eth`.
 
-[scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026.onrender.com)
+[scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026-y6tp.onrender.com/)
 
 **Notes (0:00–0:15):** Judges, this is Scout. You type a research question. You do not connect a wallet. Scout pulls live Graph data, scores the market, and if it is not sure, it asks you to authorize three cents from its policy wallet for more evidence. Then it writes the result on-chain as scout-agent.eth.
 
@@ -119,9 +119,9 @@ The visitor is not charged. Scout’s policy wallet is.
 
 Preserved deployed testnet run. Public endpoints. Explorer links.
 
-- Report: [sFRAX on Compound V3](https://scout-web-ethglobal-2026.onrender.com/research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183) — opportunity **51.4**, risk **30**, 100% confidence, 15 evidence sources
+- Report: [sFRAX on Compound V3](https://scout-web-ethglobal-2026-y6tp.onrender.com//research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183) — opportunity **51.4**, risk **30**, 100% confidence, 15 evidence sources
 - Run evidence: 11 ranked candidates, 3.3-point top-two gap, $0.03 spent, settlement `0x487cf199…39e6c8`
-- Web · [API health](https://scout-api-ethglobal-2026.onrender.com/health) · [MCP](https://scout-api-ethglobal-2026.onrender.com/mcp) · [OpenAPI](https://scout-api-ethglobal-2026.onrender.com/openapi.json)
+- Web · [API health](https://scout-api-ethglobal-2026-rljy.onrender.com/health) · [MCP](https://scout-api-ethglobal-2026-rljy.onrender.com/mcp) · [OpenAPI](https://scout-api-ethglobal-2026-rljy.onrender.com/openapi.json)
 - Payments on **Base Sepolia**. ENS on **Ethereum Sepolia**. Separate wallets. Separate explorers.
 
 **Notes (2:50–3:10):** Do not take our word. Open the preserved report. You will see the Graph sources, skipped-source disclosure, score breakdown, and Privy receipt. The winner is sFRAX on Compound V3 at 51.4 opportunity and 30 risk. Scout read the ENS budget before payment; the agent page and explorer links show the identity and scoped EAC proof separately. Two networks on purpose: Base Sepolia for USDC and Ethereum Sepolia for ENSv2.
@@ -140,22 +140,7 @@ One research loop joins standardized data, explicit uncertainty and verifiable a
 
 ---
 
-## 11 — Ask
-
-Start Fresh. First commit 5 September 2026, after ETHOnline opened.
-
-| Prize | Amount |
-|---|---|
-| The Graph — Best AI Tooling or AI Use Case (From Scratch) | $5,000 |
-| The Graph — Best Use of Composable or Standardized Graph Products | $5,000 |
-| Privy — Best financial flow | $2,500 |
-| ENS — Best Use of ENSv2 | $4,500 |
-
-**Notes (3:25–3:35):** Start Fresh. Submit us for both Graph prizes, Privy financial flow, and ENSv2.
-
----
-
-## 12 — Close
+## 11 — Close
 
 Demo prompt:
 
@@ -163,12 +148,13 @@ Demo prompt:
 
 **Scout turns uncertain Web3 questions into defensible, paid, on-chain decisions.**
 
-- Repo: [github.com/8dazo/scout](https://github.com/8dazo/scout/tree/dev)
-- App: [scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026.onrender.com)
-- Report: [preserved deployed testnet run](https://scout-web-ethglobal-2026.onrender.com/research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183)
-- MCP: [scout-api-ethglobal-2026.onrender.com/mcp](https://scout-api-ethglobal-2026.onrender.com/mcp)
+- Repo: [github.com/RohitSah23/scout](https://github.com/RohitSah23/scout)
+- App: [scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026-y6tp.onrender.com/)
+- Deck: [scout-web-ethglobal-2026-y6tp.onrender.com/pitch-deck](https://scout-web-ethglobal-2026-y6tp.onrender.com/pitch-deck)
+- Report: [preserved deployed testnet run](https://scout-web-ethglobal-2026-y6tp.onrender.com//research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183)
+- MCP: [scout-api-ethglobal-2026.onrender.com/mcp](https://scout-api-ethglobal-2026-rljy.onrender.com/mcp)
 
-**Notes (3:35–3:50):** If you remember one sentence: Scout turns uncertain Web3 questions into defensible, paid, on-chain decisions. Live Graph. A three-cent policy payment when the answer is thin. A name you can resolve. That is the demo. Thank you.
+**Notes (3:25–3:40):** If you remember one sentence: Scout turns uncertain Web3 questions into defensible, paid, on-chain decisions. Live Graph. A three-cent policy payment when the answer is thin. A name you can resolve. That is the demo. Thank you.
 
 ---
 
@@ -238,12 +224,13 @@ Synced to [DEMO.md](./DEMO.md). Record a live run — no prerecorded result.
 
 | Surface | URL |
 |---|---|
-| Repository | https://github.com/8dazo/scout/tree/dev |
-| Web | https://scout-web-ethglobal-2026.onrender.com |
-| Preserved report | https://scout-web-ethglobal-2026.onrender.com/research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183 |
-| API health | https://scout-api-ethglobal-2026.onrender.com/health |
-| MCP | https://scout-api-ethglobal-2026.onrender.com/mcp |
-| OpenAPI | https://scout-api-ethglobal-2026.onrender.com/openapi.json |
+| Repository | https://github.com/RohitSah23/scout |
+| Web | https://scout-web-ethglobal-2026-y6tp.onrender.com/ |
+| Pitch deck | https://scout-web-ethglobal-2026-y6tp.onrender.com/pitch-deck |
+| Preserved report | https://scout-web-ethglobal-2026-y6tp.onrender.com//research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183 |
+| API health | https://scout-api-ethglobal-2026-rljy.onrender.com/health |
+| MCP | https://scout-api-ethglobal-2026-rljy.onrender.com/mcp |
+| OpenAPI | https://scout-api-ethglobal-2026-rljy.onrender.com/openapi.json |
 | Preserved-report x402 tx | https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8 |
 | ENS authorized write | https://sepolia.etherscan.io/tx/0x2b65dbcf1de552eb8c31ad20d39a84107d6c59fe0b85f572c36461b8a1a0235b |
 | ENS unauthorized revert | https://sepolia.etherscan.io/tx/0xebc0c9435af2af0c1146d28b03b526082dd50b3c0556709254f95ae0fec2f831 |

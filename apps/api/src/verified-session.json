@@ -1591,7 +1591,7 @@
     "network": "Base Sepolia",
     "txHash": "0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8",
     "explorerUrl": "https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8",
-    "serviceUrl": "https://scout-api-ethglobal-2026.onrender.com/api/deep-protocol-analysis",
+    "serviceUrl": "https://scout-api-ethglobal-2026-rljy.onrender.com/api/deep-protocol-analysis",
     "settledAt": "2026-09-13T10:25:22.445Z"
   },
   "recommendation": {

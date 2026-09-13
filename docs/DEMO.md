@@ -37,6 +37,6 @@ Scout queries the five configured Base Messari deployments with one template and
 - Privy policy chips + spend tx
 - ENS Sepolia success transaction and unauthorized-write revert
 - ENS `agent.mcp` readback and [public MCP update transaction](https://sepolia.etherscan.io/tx/0x968cc1b7fc77a268815be40e55d2d197b11ebdcbb1015f88216c904467e22665)
-- Public app: <https://scout-web-ethglobal-2026.onrender.com>
-- Preserved paid testnet report: <https://scout-web-ethglobal-2026.onrender.com/research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183>
+- Public app: <https://scout-web-ethglobal-2026-y6tp.onrender.com/>
+- Preserved paid testnet report: <https://scout-web-ethglobal-2026-y6tp.onrender.com//research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183>
 - Preserved-report x402 receipt: <https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8>

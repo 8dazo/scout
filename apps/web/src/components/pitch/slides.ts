@@ -35,7 +35,7 @@ export const SLIDES: Slide[] = [
     ],
     links: [
       {
-        href: "https://scout-web-ethglobal-2026.onrender.com",
+        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com/",
         label: "scout-web-ethglobal-2026.onrender.com",
       },
     ],
@@ -196,7 +196,7 @@ export const SLIDES: Slide[] = [
     items: [
       {
         text: "Report: cbBTC on Aave V3 — opportunity 52.0, risk 30, 100% confidence, 21 evidence sources",
-        href: "https://scout-web-ethglobal-2026.onrender.com/research/f28e5c0e-0081-435c-8cad-18b60713534f",
+        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com//research/f28e5c0e-0081-435c-8cad-18b60713534f",
       },
       {
         text: "Earlier verified paid run of the same loop: opportunity 53.7, risk 30, 16 candidates, 20 initial sources, $0.03 spent",
@@ -205,19 +205,19 @@ export const SLIDES: Slide[] = [
     ],
     links: [
       {
-        href: "https://scout-web-ethglobal-2026.onrender.com",
+        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com/",
         label: "Web",
       },
       {
-        href: "https://scout-api-ethglobal-2026.onrender.com/health",
+        href: "https://scout-api-ethglobal-2026-rljy.onrender.com/health",
         label: "API health",
       },
       {
-        href: "https://scout-api-ethglobal-2026.onrender.com/mcp",
+        href: "https://scout-api-ethglobal-2026-rljy.onrender.com/mcp",
         label: "MCP",
       },
       {
-        href: "https://scout-api-ethglobal-2026.onrender.com/openapi.json",
+        href: "https://scout-api-ethglobal-2026-rljy.onrender.com/openapi.json",
         label: "OpenAPI",
       },
     ],
@@ -247,35 +247,25 @@ export const SLIDES: Slide[] = [
       "Scout’s differentiation is the connected loop. Standardized Graph evidence drives the ranking. Explicit uncertainty decides when more evidence is worth buying. Privy and x402 constrain and prove the spend. ENS supplies the agent name, scoped permissions, budget and MCP location. We are not stretching into prizes we did not finish.",
   },
   {
-    id: "ask",
-    kicker: "11",
-    title: "Ask",
-    lead: "Start Fresh. First commit 5 September 2026, after ETHOnline opened.",
-    items: [
-      { label: "$5,000", text: "The Graph — Best AI Tooling or AI Use Case (From Scratch)" },
-      { label: "$5,000", text: "The Graph — Best Use of Composable or Standardized Graph Products" },
-      { label: "$2,500", text: "Privy — Best financial flow" },
-      { label: "$4,500", text: "ENS — Best Use of ENSv2" },
-    ],
-    notes:
-      "Start Fresh. Submit us for both Graph prizes, Privy financial flow, and ENSv2.",
-  },
-  {
     id: "close",
-    kicker: "12",
+    kicker: "11",
     title: "Close",
     lead: "Demo prompt",
     quote:
       "Rank the top lending assets across Base protocols. Which token market has the best opportunity for a new developer product? I have a $0.50 research budget.",
     closing: "Scout turns uncertain Web3 questions into defensible, paid, on-chain decisions.",
     links: [
-      { href: "https://github.com/8dazo/scout/tree/dev", label: "Repo" },
-      { href: "https://scout-web-ethglobal-2026.onrender.com", label: "App" },
+      { href: "https://github.com/RohitSah23/scout", label: "Repo" },
+      { href: "https://scout-web-ethglobal-2026-y6tp.onrender.com/", label: "App" },
       {
-        href: "https://scout-web-ethglobal-2026.onrender.com/research/f28e5c0e-0081-435c-8cad-18b60713534f",
+        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com/pitch-deck",
+        label: "Deck",
+      },
+      {
+        href: "https://scout-web-ethglobal-2026-y6tp.onrender.com//research/f28e5c0e-0081-435c-8cad-18b60713534f",
         label: "Report",
       },
-      { href: "https://scout-api-ethglobal-2026.onrender.com/mcp", label: "MCP" },
+      { href: "https://scout-api-ethglobal-2026-rljy.onrender.com/mcp", label: "MCP" },
     ],
     notes:
       "If you remember one sentence: Scout turns uncertain Web3 questions into defensible, paid, on-chain decisions. Live Graph. A three-cent policy payment when the answer is thin. A name you can resolve. That is the demo. Thank you.",

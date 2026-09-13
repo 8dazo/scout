@@ -90,17 +90,17 @@ The proof below was produced by real APIs and public testnet transactions betwee
 
 | Surface | Public endpoint | Verification |
 |---|---|---|
-| Web dashboard | [scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026.onrender.com) | Render service is live; production Next.js UI loads and Privy becomes ready |
-| API health | [`/health`](https://scout-api-ethglobal-2026.onrender.com/health) | Returns `{"ok":true,"service":"scout-api"}` |
-| Agent identity | [`/agent/identity`](https://scout-api-ethglobal-2026.onrender.com/agent/identity) | Resolves `scout-agent.eth`, EAC permissions, records and the onchain budget |
-| MCP server | [`/mcp`](https://scout-api-ethglobal-2026.onrender.com/mcp) | Current build passes MCP initialize locally; redeploy is required to replace the stale public instance that returned HTTP 500 during the 13 September readiness check |
-| OpenAPI | [`/openapi.json`](https://scout-api-ethglobal-2026.onrender.com/openapi.json) | Machine-readable research and x402 service contract |
+| Web dashboard | [scout-web-ethglobal-2026.onrender.com](https://scout-web-ethglobal-2026-y6tp.onrender.com/) | Render service is live; production Next.js UI loads and Privy becomes ready |
+| API health | [`/health`](https://scout-api-ethglobal-2026-rljy.onrender.com/health) | Returns `{"ok":true,"service":"scout-api"}` |
+| Agent identity | [`/agent/identity`](https://scout-api-ethglobal-2026-rljy.onrender.com/agent/identity) | Resolves `scout-agent.eth`, EAC permissions, records and the onchain budget |
+| MCP server | [`/mcp`](https://scout-api-ethglobal-2026-rljy.onrender.com/mcp) | Current build passes MCP initialize locally; redeploy is required to replace the stale public instance that returned HTTP 500 during the 13 September readiness check |
+| OpenAPI | [`/openapi.json`](https://scout-api-ethglobal-2026-rljy.onrender.com/openapi.json) | Machine-readable research and x402 service contract |
 
 Both Render services deploy from the public `dev` branch. The versioned [`render.yaml`](render.yaml) contains the complete two-service topology while credentials remain only in Render's encrypted environment.
 
 ### Public end-to-end deployed testnet run
 
-The [preserved verified report](https://scout-web-ethglobal-2026.onrender.com/research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183) queried all five configured Base lending deployments. Three returned token-level data in that run: two Messari-composable protocols plus the separately labeled native Aave adapter. Scout ranked 11 assets, disclosed two skipped sources and sparse OpenSEO data, triggered the uncertainty gate at a 3.3-point top-two gap, and bought candidate-specific diagnostics through the deployed x402 endpoint. The Privy policy-approved payment settled [on Base Sepolia](https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8) for 0.03 USDC. The report selected sFRAX on Compound V3 with a 51.4 opportunity score, 30 risk score, 100% evidence confidence and 15 evidence sources.
+The [preserved verified report](https://scout-web-ethglobal-2026-y6tp.onrender.com//research/3c47f2ea-52a1-40fc-b0cf-a6776d7c5183) queried all five configured Base lending deployments. Three returned token-level data in that run: two Messari-composable protocols plus the separately labeled native Aave adapter. Scout ranked 11 assets, disclosed two skipped sources and sparse OpenSEO data, triggered the uncertainty gate at a 3.3-point top-two gap, and bought candidate-specific diagnostics through the deployed x402 endpoint. The Privy policy-approved payment settled [on Base Sepolia](https://sepolia.basescan.org/tx/0x487cf199e32403636324c2a2157aa6cd6683d116b5a94932fb47c4765239e6c8) for 0.03 USDC. The report selected sFRAX on Compound V3 with a 51.4 opportunity score, 30 risk score, 100% evidence confidence and 15 evidence sources.
 
 A compact copy of that real API response is versioned with the API so the proof route survives Render's ephemeral filesystem. It is a historical evidence snapshot, not a claim that its market data remains live after 13 September 2026.
 
@@ -160,7 +160,7 @@ Real ENSv2 transaction sequence:
 4. [Initialize address/identity records and delegate EAC roles](https://sepolia.etherscan.io/tx/0x5cc3ec6dfc7cbcdc2c5e67d06068e6306c43391aacd4ed825ba0ba8467de6f8d).
 5. [Scoped agent write succeeds](https://sepolia.etherscan.io/tx/0x2b65dbcf1de552eb8c31ad20d39a84107d6c59fe0b85f572c36461b8a1a0235b).
 6. [Unauthorized write is mined and reverts](https://sepolia.etherscan.io/tx/0xebc0c9435af2af0c1146d28b03b526082dd50b3c0556709254f95ae0fec2f831).
-7. [Production MCP record update](https://sepolia.etherscan.io/tx/0x968cc1b7fc77a268815be40e55d2d197b11ebdcbb1015f88216c904467e22665) sets `agent.mcp` to `https://scout-api-ethglobal-2026.onrender.com/mcp`.
+7. [Production MCP record update](https://sepolia.etherscan.io/tx/0x968cc1b7fc77a268815be40e55d2d197b11ebdcbb1015f88216c904467e22665) sets `agent.mcp` to `https://scout-api-ethglobal-2026-rljy.onrender.com/mcp`.
 
 Verified resolver state:
 
@@ -169,7 +169,7 @@ Verified resolver state:
 - research.budget = 0.50
 - research.status = ready
 - research.lastReport = provisioning-proof
-- agent.mcp = https://scout-api-ethglobal-2026.onrender.com/mcp
+- agent.mcp = https://scout-api-ethglobal-2026-rljy.onrender.com/mcp
 - Agent holds record-specific ROLE_SET_TEXT for research.status and research.lastReport
 - Agent does not hold root-level text permission
 
