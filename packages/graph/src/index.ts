@@ -186,9 +186,6 @@ export class GraphProvider implements DataProvider {
     for (const result of results) {
       if (!result) continue;
       const { dep, data, query, kind } = result;
-      queriesUsed.add(query.trim());
-      if (kind === "messari") messariCount += 1;
-      protocolCount += 1;
 
       const root = data as { data?: Record<string, unknown> };
       const payload = root.data ?? {};
@@ -201,6 +198,9 @@ export class GraphProvider implements DataProvider {
         skipped.push(`${dep.protocol} (${dep.chain}): no token markets returned`);
         continue;
       }
+      queriesUsed.add(query.trim());
+      if (kind === "messari") messariCount += 1;
+      protocolCount += 1;
       candidates.push(...tokenRows);
 
       const slugKey = (dep.messariSlug ?? `${dep.protocol}-${dep.chain}`)

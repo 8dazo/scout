@@ -14,8 +14,13 @@ module.exports = {
         error: "var(--error)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "system-ui", "sans-serif"],
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ['var(--font-display, "Big Shoulders")', "system-ui", "sans-serif"],
+        sans: [
+          'var(--font-sans, "DM Sans")',
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+        ],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       spacing: {
