@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "valid-narration",
+      "command": [
+        "node",
+        "entry.mjs"
+      ],
+      "recordings": "fixtures/valid-narration.jsonl",
+      "expect": {
+        "outputEquals": {
+          "rejected": false,
+          "result": {
+            "summary": "Aave has an analytics gap",
+            "why": [
+              "Growing usage",
+              "Clear evidence",
+              "Developer demand"
+            ],
+            "action": "Build an analytics dashboard",
+            "source": "openrouter"
+          }
+        }
+      }
+    },
+    {
+      "id": "reject-numeric-summary",
+      "command": [
+        "node",
+        "entry.mjs"
+      ],
+      "recordings": "fixtures/reject-numeric-summary.jsonl",
+      "expect": {
+        "outputEquals": {
+          "rejected": true
+        }
+      }
+    },
+    {
+      "id": "reject-object-action",
+      "command": [
+        "node",
+        "entry.mjs"
+      ],
+      "recordings": "fixtures/reject-object-action.jsonl",
+      "expect": {
+        "outputEquals": {
+          "rejected": true
+        }
+      }
+    },
+    {
+      "id": "reject-nonstring-reasons",
+      "command": [
+        "node",
+        "entry.mjs"
+      ],
+      "recordings": "fixtures/reject-nonstring-reasons.jsonl",
+      "expect": {
+        "outputEquals": {
+          "rejected": true
+        }
+      }
+    }
+  ]
+}

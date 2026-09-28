@@ -79,8 +79,13 @@ Write a concise recommendation for a developer looking to build on the winning p
       why?: string[];
       action?: string;
     };
-    if (!parsed.summary || !parsed.action) {
-      throw new NarrationError("OpenRouter narration JSON missing summary or action");
+    if (typeof parsed.summary !== "string" || !parsed.summary.trim() ||
+        typeof parsed.action !== "string" || !parsed.action.trim()) {
+      throw new NarrationError("OpenRouter narration requires non-empty string summary and action");
+    }
+    if (parsed.why !== undefined && (!Array.isArray(parsed.why) ||
+        parsed.why.some((reason) => typeof reason !== "string" || !reason.trim()))) {
+      throw new NarrationError("OpenRouter narration why must contain non-empty strings");
     }
     const fallback = templateNarration(input);
     return {
