@@ -1,0 +1,1 @@
+{"name":"scout-aurat-regression","private":true,"type":"module","scripts":{"build":"esbuild ../packages/llm/src/narrate.ts --bundle --platform=node --format=esm --outfile=build/narrate.mjs","test":"npm run build && aurat test --suite suite.json --report report.json"},"dependencies":{"aurat":"github:8dazo/aurat#b63aefa1010e64c936857a691115366ca1dca6a2","esbuild":"0.25.12"}}

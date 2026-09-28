@@ -9,3 +9,5 @@ dist
 .scout-data
 .DS_Store
 coverage
+.aurat/build/
+.aurat/report.json
